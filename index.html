@@ -55,12 +55,13 @@ body{background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px
 .calc-result .val.green{color:var(--green)}
 .calc-result .val.red{color:var(--red)}
 .calc-result .detail{font-size:11px;color:var(--muted);margin-top:6px}
-.flashcard-container{perspective:600px;display:flex;justify-content:center}
-.flashcard{background:linear-gradient(135deg,var(--card),#1a1a2e);border:1px solid var(--border);border-radius:14px;padding:24px 18px;text-align:center;cursor:pointer;min-height:180px;width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;user-select:none;transition:transform 0.3s ease, opacity 0.15s ease;transform-style:preserve-3d}
-.flashcard .front{font-size:14px;font-weight:500;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.flashcard .back{font-size:13px;line-height:1.5;color:var(--accent2);backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg)}
-.flashcard:not(.flipped) .back{display:none}
-.flashcard.flipped .front{display:none}
+.fc-wrap{display:flex;justify-content:center}
+.flashcard{background:linear-gradient(135deg,var(--card),#1a1a2e);border:1px solid var(--border);border-radius:14px;min-height:180px;width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 18px;text-align:center;cursor:pointer;transition:opacity 0.2s ease;user-select:none;position:relative;overflow:hidden}
+.flashcard-content{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px}
+.flashcard-content.front{display:flex}
+.flashcard-content.back{display:none;color:var(--accent2);font-size:13px;line-height:1.5}
+.flashcard.flipped .flashcard-content.front{display:none}
+.flashcard.flipped .flashcard-content.back{display:flex}
 .flashcard-hint{font-size:11px;color:var(--muted);margin-top:8px;text-align:center}
 .flash-nav{display:flex;gap:10px;margin-top:14px;justify-content:center}
 .flash-nav button{padding:8px 18px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:13px;cursor:pointer}
@@ -91,7 +92,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px
 <button class="tab active" onclick="switchTab(0)"><span class="icon">📚</span>Strategies</button>
 <button class="tab" onclick="switchTab(1)"><span class="icon">🧠</span>Quiz</button>
 <button class="tab" onclick="switchTab(2)"><span class="icon">🧮</span>Calculator</button>
-<button class="tab" onclick="switchTab(3)"><span class="icon">⚡</span>Flashcards</button>
+<button class="tab" onclick="switchTab(3)"><span class="icon"></span>Flashcards</button>
 </div>
 <div class="panel active" id="panel0"><div class="section-title">📚 Level 3 Option Strategies</div>
 <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Tap any card to expand. Know these cold for the exam.</p>
@@ -111,7 +112,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px
 <div class="score-item amber"><div class="num" id="q-pct">-</div><div class="label">% Score</div></div>
 </div>
 <div id="quiz-container"></div><button class="reset-btn" onclick="resetQuiz()">Reset Quiz</button></div>
-<div class="panel" id="panel2"><div class="section-title">🧮 P&L Calculator</div>
+<div class="panel" id="panel2"><div class="section-title"> P&L Calculator</div>
 <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Calculate max profit, max loss, and breakeven for spread strategies.</p>
 <div class="card"><label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px">Strategy Type</label>
 <select id="calc-strategy" onchange="updateCalcFields()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px">
@@ -122,7 +123,10 @@ body{background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px
 <div class="calc-result" id="calc-result"></div></div>
 <div class="panel" id="panel3"><div class="section-title">⚡ Flashcards</div>
 <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Tap the card to flip. Study Greeks, terms, and rules.</p>
-<div class="flashcard-container"><div class="flashcard" id="flashcard" onclick="flipCard()"><div class="front" id="fc-front"></div><div class="back" id="fc-back"></div></div></div>
+<div class="fc-wrap"><div class="flashcard" id="flashcard" onclick="flipCard()">
+<div class="flashcard-content front" id="fc-front"></div>
+<div class="flashcard-content back" id="fc-back"></div>
+</div></div>
 <p class="flashcard-hint">Tap card to flip</p>
 <div class="flash-nav"><button onclick="prevCard()">← Prev</button><button onclick="nextCard()">Next →</button></div>
 <p class="flash-counter" id="fc-counter"></p></div>
@@ -138,7 +142,6 @@ const strategies=[
 {title:"Diagonal Spread",badge:"neutral",summary:"Like calendar but different strikes. More directional.",details:"<b>Setup:</b> Sell near-term @ strike A, Buy later-term @ strike B.<br><b>Net:</b> Can be debit or credit.<br><b>When to use:</b> Want theta decay with directional bias.<br><b>Risk:</b> Long can lose value if stock moves far from short strike."},
 {title:"Risk Reversal (Collar)",badge:"risk",summary:"Protective put + covered call to finance downside protection.",details:"<b>Setup:</b> Own stock. Buy OTM put. Sell OTM call to finance it.<br><b>Net:</b> Can be near zero (call pays for put)<br><b>Max Loss:</b> Stock price - put strike<br><b>Max Gain:</b> Call strike - stock price<br><b>When to use:</b> Own stock, want protection without paying.<br><b>Risk:</b> Upside capped by short call."}
 ];
-
 const quizQuestions=[
 {q:"What is a bull call spread?",opts:["Buy a lower strike call and sell a higher strike call","Sell a lower strike call and buy a higher strike call","Buy a higher strike put and sell a lower strike put","Buy a call and sell a put at the same strike"],correct:0,explanation:"A bull call spread involves BUYING a lower strike call and SELLING a higher strike call of the same expiration. It's a DEBIT spread because you pay the difference between the two premiums."},
 {q:"In a bear call spread, what is your maximum loss?",opts:["Unlimited","The width of the strikes minus the credit received","Only the credit received","The full stock price"],correct:1,explanation:"Max loss = (difference between strikes) - (credit received) x 100. The short call has unlimited risk but the long call above it caps the loss. Defined-risk strategy."},
@@ -171,7 +174,6 @@ const quizQuestions=[
 {q:"What is the leverage advantage of options over buying stock?",opts:["Options are always cheaper","Controls 100 shares per contract for a fraction of the stock price","Options never expire","Options guarantee profit"],correct:1,explanation:"One option contract controls 100 shares. Buying 100 shares at $50 = $5,000. A $50 call might cost $200 ($2 x 100). You control the same 100 shares for much less capital. But time decay and missed moves can wipe out the cheaper premium."},
 {q:"What are the upper and lower breakevens for an iron condor with: Short put $95, Short call $105, Net credit $3?",opts:["Lower: $92, Upper: $108","Lower: $95, Upper: $105","Lower: $98, Upper: $102","Lower: $97, Upper: $107"],correct:0,explanation:"Lower breakeven = $95 - $3 = $92. Upper breakeven = $105 + $3 = $108. You profit if the stock stays between $92 and $108."}
 ];
-
 const flashcards=[
 {front:"What is Delta?",back:"Delta measures the change in option price per $1 move in the underlying stock. Call delta: 0 to 1. Put delta: -1 to 0. Also approximates probability of ITM at expiration."},
 {front:"What is Gamma?",back:"Gamma measures how much Delta changes per $1 move in the stock. Highest near expiration and at-the-money. Creates 'gamma risk' — rapid P&L swings on expiration day."},
@@ -204,29 +206,43 @@ const flashcards=[
 {front:"What is Rho?",back:"Rho measures sensitivity to interest rate changes. Least important Greek for most traders. Calls have positive rho, puts have negative rho. Significant only for very long-dated options (LEAPS)."},
 {front:"Max Profit: Iron Condor",back:"Max profit = Net credit received x 100. Achieved if stock stays between the two short strikes at expiration. Max loss = Width of either spread - credit, x 100."}
 ];
-
 let currentTab=0,quizAnswered={},qCorrect=0,qWrong=0,fcIndex=0,fcFlipped=false;
 try{const s=JSON.parse(localStorage.getItem('optStudyQuiz')||'{}');quizAnswered=s.answers||{};qCorrect=s.correct||0;qWrong=s.wrong||0;}catch(e){}
-
 function switchTab(i){currentTab=i;document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',j===i));for(let j=0;j<4;j++){const d=document.getElementById('pd'+j);d.classList.toggle('done',j<i);d.classList.toggle('active',j===i);}}
-
 function renderStrategies(f){const l=document.getElementById('strategy-list');let fl=f==='all'?strategies:strategies.filter(s=>s.badge===f);l.innerHTML=fl.map((s,i)=>`<div class="card strategy-card" data-badge="${s.badge}"><div style="display:flex;justify-content:space-between;align-items:center"><h3>${s.title}</h3><span class="badge badge-${s.badge}">${s.badge}</span></div><p style="margin-top:4px">${s.summary}</p><div class="expand-content" id="exp-${f}-${i}">${s.details.replace(/\\n/g,'<br>')}</div><button class="expand-btn" onclick="toggleExpand('exp-${f}-${i}', this)">&#9660; Details</button></div>`).join('');}
 function toggleExpand(id,btn){const el=document.getElementById(id);const show=!el.classList.contains('show');el.classList.toggle('show',show);btn.innerHTML=show?'&#9650; Hide':'&#9660; Details';}
 function filterStrategies(f){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');renderStrategies(f);}
-
 function renderQuiz(){const c=document.getElementById('quiz-container');c.innerHTML=quizQuestions.map((q,i)=>`<div class="quiz-q" id="qq-${i}"><div class="q-num">Question ${i+1} of ${quizQuestions.length}</div><div class="q-text">${q.q}</div><div id="opts-${i}">${q.opts.map((o,j)=>`<button class="quiz-opt${quizAnswered[i]!==undefined?' disabled':''}${quizAnswered[i]===j&&j===q.correct?' correct':''}${quizAnswered[i]===j&&j!==q.correct?' wrong':''}${quizAnswered[i]!==undefined&&j===q.correct?' correct':''}" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}</div><div class="explanation ${quizAnswered[i]!==undefined?'show':''}" id="expl-${i}">${q.explanation||''}</div></div>`).join('');updateScore();}
 function answerQuiz(qi,oi){if(quizAnswered[qi]!==undefined)return;const q=quizQuestions[qi];quizAnswered[qi]=oi;if(oi===q.correct)qCorrect++;else qWrong++;localStorage.setItem('optStudyQuiz',JSON.stringify({answers:quizAnswered,correct:qCorrect,wrong:qWrong}));const opts=document.querySelectorAll(`#opts-${qi} .quiz-opt`);opts.forEach((o,j)=>{o.classList.add('disabled');if(j===q.correct)o.classList.add('correct');if(j===oi&&j!==q.correct)o.classList.add('wrong');});document.getElementById(`expl-${qi}`).classList.add('show');updateScore();}
 function updateScore(){const t=qCorrect+qWrong;document.getElementById('q-total').textContent=t;document.getElementById('q-correct').textContent=qCorrect;document.getElementById('q-wrong').textContent=qWrong;document.getElementById('q-pct').textContent=t>0?Math.round(qCorrect/t*100)+'%':'-';}
 function resetQuiz(){if(!confirm('Reset all quiz progress?'))return;quizAnswered={};qCorrect=0;qWrong=0;localStorage.setItem('optStudyQuiz',JSON.stringify({answers:{},correct:0,wrong:0}));renderQuiz();}
-
 function updateCalcFields(){const s=document.getElementById('calc-strategy').value;const f=document.getElementById('calc-fields');document.getElementById('calc-result').classList.remove('show');const t={bull_call:[{label:'Long Call Strike',id:'lStrike',type:'number'},{label:'Short Call Strike',id:'sStrike',type:'number'},{label:'Net Debit ($)',id:'debit',type:'number',step:'0.01'}],bear_call:[{label:'Short Call Strike',id:'sStrike',type:'number'},{label:'Long Call Strike',id:'lStrike',type:'number'},{label:'Net Credit ($)',id:'credit',type:'number',step:'0.01'}],bull_put:[{label:'Short Put Strike',id:'sStrike',type:'number'},{label:'Long Put Strike',id:'lStrike',type:'number'},{label:'Net Credit ($)',id:'credit',type:'number',step:'0.01'}],bear_put:[{label:'Long Put Strike',id:'lStrike',type:'number'},{label:'Short Put Strike',id:'sStrike',type:'number'},{label:'Net Debit ($)',id:'debit',type:'number',step:'0.01'}],iron_condor:[{label:'Short Put Strike',id:'spStrike',type:'number'},{label:'Long Put Strike',id:'lpStrike',type:'number'},{label:'Short Call Strike',id:'scStrike',type:'number'},{label:'Long Call Strike',id:'lcStrike',type:'number'},{label:'Net Credit ($)',id:'credit',type:'number',step:'0.01'}]};f.innerHTML='<div class="section-title" style="font-size:13px">Enter Values</div>'+t[s].map(x=>`<div class="calc-row"><label>${x.label}</label><input type="${x.type}" id="${x.id}" step="${x.step||'1'}"/></div>`).join('');}
 function calculate(){const s=document.getElementById('calc-strategy').value;const r=document.getElementById('calc-result');let html='';const gv=id=>{const el=document.getElementById(id);return el?parseFloat(el.value):NaN;};if(s==='bull_call'){const ls=gv('lStrike'),ss=gv('sStrike'),d=gv('debit');if([ls,ss,d].some(isNaN)){r.innerHTML='<p style="color:var(--danger)">Please fill in all fields.</p>';r.classList.add('show');return;}const mp=((ss-ls)-d)*100,ml=d*100,be=ls+d;html=`<div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Profit</span><br><span class="val green">$${mp.toFixed(2)}</span></div><div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Loss</span><br><span class="val red">$${ml.toFixed(2)}</span></div><div><span style="font-size:12px;color:var(--muted)">Breakeven</span><br><span class="val" style="color:var(--accent)">$${be.toFixed(2)}</span></div><div class="detail">Stock must close above $${be.toFixed(2)} to profit.</div>`;}else if(s==='bear_call'){const ss=gv('sStrike'),ls=gv('lStrike'),c=gv('credit');if([ss,ls,c].some(isNaN)){r.innerHTML='<p style="color:var(--danger)">Please fill in all fields.</p>';r.classList.add('show');return;}const mp=c*100,ml=((ls-ss)-c)*100,be=ss+c;html=`<div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Profit</span><br><span class="val green">$${mp.toFixed(2)}</span></div><div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Loss</span><br><span class="val red">$${ml.toFixed(2)}</span></div><div><span style="font-size:12px;color:var(--muted)">Breakeven</span><br><span class="val" style="color:var(--accent)">$${be.toFixed(2)}</span></div><div class="detail">Stock must stay below $${be.toFixed(2)}.</div>`;}else if(s==='bull_put'){const ss=gv('sStrike'),ls=gv('lStrike'),c=gv('credit');if([ss,ls,c].some(isNaN)){r.innerHTML='<p style="color:var(--danger)">Please fill in all fields.</p>';r.classList.add('show');return;}const mp=c*100,ml=((ss-ls)-c)*100,be=ss-c;html=`<div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Profit</span><br><span class="val green">$${mp.toFixed(2)}</span></div><div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Loss</span><br><span class="val red">$${ml.toFixed(2)}</span></div><div><span style="font-size:12px;color:var(--muted)">Breakeven</span><br><span class="val" style="color:var(--accent)">$${be.toFixed(2)}</span></div><div class="detail">Stock must stay above $${be.toFixed(2)}.</div>`;}else if(s==='bear_put'){const ls=gv('lStrike'),ss=gv('sStrike'),d=gv('debit');if([ls,ss,d].some(isNaN)){r.innerHTML='<p style="color:var(--danger)">Please fill in all fields.</p>';r.classList.add('show');return;}const mp=((ls-ss)-d)*100,ml=d*100,be=ls-d;html=`<div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Profit</span><br><span class="val green">$${mp.toFixed(2)}</span></div><div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Loss</span><br><span class="val red">$${ml.toFixed(2)}</span></div><div><span style="font-size:12px;color:var(--muted)">Breakeven</span><br><span class="val" style="color:var(--accent)">$${be.toFixed(2)}</span></div><div class="detail">Stock must close below $${be.toFixed(2)} to profit.</div>`;}else if(s==='iron_condor'){const sp=gv('spStrike'),lp=gv('lpStrike'),sc=gv('scStrike'),lc=gv('lcStrike'),c=gv('credit');if([sp,lp,sc,lc,c].some(isNaN)){r.innerHTML='<p style="color:var(--danger)">Please fill in all fields.</p>';r.classList.add('show');return;}const mp=c*100,ps=(sp-lp)-c,cs=(lc-sc)-c,ml=Math.max(ps,cs)*100,bL=sp-c,bU=sc+c;html=`<div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Profit</span><br><span class="val green">$${mp.toFixed(2)}</span></div><div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Loss</span><br><span class="val red">$${ml.toFixed(2)}</span></div><div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Lower Breakeven</span><br><span class="val" style="color:var(--accent)">$${bL.toFixed(2)}</span></div><div><span style="font-size:12px;color:var(--muted)">Upper Breakeven</span><br><span class="val" style="color:var(--accent)">$${bU.toFixed(2)}</span></div><div class="detail">Profit zone: $${bL.toFixed(2)} to $${bU.toFixed(2)}.</div>`;}r.innerHTML=html;r.classList.add('show');}
 
-function showFlashcard(){const fc=flashcards[fcIndex];document.getElementById('fc-front').textContent=fc.front;document.getElementById('fc-back').textContent=fc.back;document.getElementById('fc-counter').textContent=`${fcIndex+1} / ${flashcards.length}`;fcFlipped=false;}
-function flipCard(){const card=document.getElementById('flashcard');fcFlipped=!fcFlipped;card.classList.toggle('flipped',fcFlipped);}
+function showFlashcard(){
+  const fc=flashcards[fcIndex];
+  document.getElementById('fc-front').textContent=fc.front;
+  document.getElementById('fc-back').textContent=fc.back;
+  document.getElementById('fc-counter').textContent=`${fcIndex+1} / ${flashcards.length}`;
+  fcFlipped=false;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+
+let isFlipping=false;
+function flipCard(){
+  if(isFlipping)return;
+  const card=document.getElementById('flashcard');
+  card.style.opacity='0';
+  isFlipping=true;
+  setTimeout(()=>{
+    fcFlipped=!fcFlipped;
+    card.classList.toggle('flipped',fcFlipped);
+    card.style.opacity='1';
+    isFlipping=false;
+  },200);
+}
 function nextCard(){fcIndex=(fcIndex+1)%flashcards.length;showFlashcard();}
 function prevCard(){fcIndex=(fcIndex-1+flashcards.length)%flashcards.length;showFlashcard();}
-
 renderStrategies('all');renderQuiz();updateCalcFields();showFlashcard();
 </script>
 </body>
