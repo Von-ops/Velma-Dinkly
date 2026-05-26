@@ -2,248 +2,40 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Options Level 3 Study Guide</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Velma-Dinkly Projects</title>
 <style>
-:root{--bg:#0a0a0f;--card:#14141f;--accent:#3b82f6;--accent2:#10b981;--danger:#ef4444;--warn:#f59e0b;--text:#e2e8f0;--muted:#64748b;--border:#1e293b;--green:#22c55e;--red:#dc2626}
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-body{background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px}
-.header{background:linear-gradient(135deg,#1e3a5f,#0f172a);padding:16px 16px 12px;text-align:center;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-.header h1{font-size:20px;font-weight:800;letter-spacing:-.5px}
-.header p{font-size:12px;color:var(--muted);margin-top:4px}
-.progress-bar{display:flex;gap:6px;margin-top:8px;justify-content:center}
-.progress-dot{width:8px;height:8px;border-radius:50%;background:var(--border)}
-.progress-dot.done{background:var(--accent2)}
-.progress-dot.active{background:var(--accent);transform:scale(1.3)}
-.tabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);z-index:100}
-.tab{flex:1;padding:10px 4px 8px;text-align:center;font-size:10px;color:var(--muted);cursor:pointer;border:none;background:none;transition:.2s}
-.tab.active{color:var(--accent)}
-.tab .icon{font-size:20px;display:block;margin-bottom:2px}
-.panel{display:none;padding:12px;max-width:600px;margin:0 auto}
-.panel.active{display:block}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
-.card h3{font-size:15px;font-weight:700;margin-bottom:6px}
-.card p,.card li{font-size:13px;line-height:1.5;color:var(--text)}
-.meta{font-size:11px;color:var(--muted);margin-top:6px}
-.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600}
-.badge-bull{background:#166534;color:#86efac}
-.badge-bear{background:#7f1d1d;color:#fca5a5}
-.badge-neutral{background:#78350f;color:#fde68a}
-.badge-risk{background:#1e1b4b;color:#a5b4fc}
-.expand-btn{background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;margin-top:6px;padding:4px 0}
-.expand-content{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:12px;line-height:1.6}
-.expand-content.show{display:block}
-.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
-.quiz-q .q-num{font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px}
-.quiz-q .q-text{font-size:14px;font-weight:600;margin-bottom:10px}
-.quiz-opt{display:block;width:100%;padding:10px 12px;margin-bottom:6px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;text-align:left;cursor:pointer;transition:.2s}
-.quiz-opt:hover{border-color:var(--accent)}
-.quiz-opt.correct{border-color:var(--green);background:#052e16;color:#86efac}
-.quiz-opt.wrong{border-color:var(--red);background:#2e0505;color:#fca5a5}
-.quiz-opt.disabled{pointer-events:none;opacity:.6}
-.explanation{display:none;margin-top:8px;padding:10px;background:#1a1a2e;border-radius:8px;font-size:12px;line-height:1.5;color:var(--muted)}
-.explanation.show{display:block}
-.calc-form{display:grid;gap:8px}
-.calc-row{display:flex;gap:8px;align-items:center}
-.calc-row label{font-size:12px;width:110px;flex-shrink:0}
-.calc-row input,.calc-row select{flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px}
-.calc-btn{width:100%;padding:10px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px}
-.calc-btn:active{opacity:.8}
-.calc-result{display:none;margin-top:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
-.calc-result.show{display:block}
-.calc-result .val{font-size:18px;font-weight:700}
-.calc-result .val.green{color:var(--green)}
-.calc-result .val.red{color:var(--red)}
-.calc-result .detail{font-size:11px;color:var(--muted);margin-top:6px}
-.fc-wrap{display:flex;justify-content:center}
-.flashcard{background:linear-gradient(135deg,var(--card),#1a1a2e);border:1px solid var(--border);border-radius:14px;min-height:180px;width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 18px;text-align:center;cursor:pointer;transition:opacity 0.2s ease;user-select:none;position:relative;overflow:hidden}
-.flashcard-content{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px}
-.flashcard-content.front{display:flex}
-.flashcard-content.back{display:none;color:var(--accent2);font-size:13px;line-height:1.5}
-.flashcard.flipped .flashcard-content.front{display:none}
-.flashcard.flipped .flashcard-content.back{display:flex}
-.flashcard-hint{font-size:11px;color:var(--muted);margin-top:8px;text-align:center}
-.flash-nav{display:flex;gap:10px;margin-top:14px;justify-content:center}
-.flash-nav button{padding:8px 18px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:13px;cursor:pointer}
-.flash-nav button:active{opacity:.6}
-.flash-counter{text-align:center;font-size:12px;color:var(--muted);margin-top:6px}
-.score-board{display:flex;gap:12px;justify-content:center;margin-bottom:14px}
-.score-item{text-align:center;padding:10px 16px;background:var(--card);border-radius:10px;min-width:80px}
-.score-item .num{font-size:22px;font-weight:800}
-.score-item .label{font-size:10px;color:var(--muted);margin-top:2px}
-.score-item.green .num{color:var(--green)}
-.score-item.red .num{color:var(--red)}
-.score-item.blue .num{color:var(--accent)}
-.score-item.amber .num{color:var(--warn)}
-.filter-bar{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
-.filter-btn{padding:5px 10px;border-radius:99px;font-size:11px;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0}
-.filter-btn.active{border-color:var(--accent);color:var(--text);background:#1e293b}
-.section-title{font-size:16px;font-weight:700;margin:14px 0 8px;display:flex;align-items:center;gap:6px}
-.reset-btn{display:block;margin:20px auto;padding:8px 16px;border:1px solid var(--danger);border-radius:8px;background:transparent;color:var(--danger);font-size:12px;cursor:pointer}
+body{background:#0a0a0f;color:#e2e8f0;min-height:100vh;padding:20px}
+.container{max-width:500px;margin:0 auto}
+h1{font-size:20px;font-weight:800;text-align:center;margin-bottom:4px}
+.subtitle{text-align:center;color:#64748b;font-size:12px;margin-bottom:24px}
+.card{background:#14141f;border:1px solid #1e293b;border-radius:14px;padding:18px;margin-bottom:12px;text-decoration:none;color:inherit;display:block;transition:.2s}
+.card:hover{border-color:#3b82f6}
+.card h2{font-size:16px;font-weight:700;margin-bottom:6px}
+.card p{font-size:12px;color:#64748b;line-height:1.4}
+.card .tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:99px;background:#1e293b;color:#94a3b8;margin-right:4px;margin-top:6px}
+.footer{text-align:center;color:#334155;font-size:10px;margin-top:24px}
 </style>
 </head>
 <body>
-<div class="header">
-<h1>📈 Options Level 3 Study Guide</h1>
-<p>Robinhood Level 3 Approval Prep</p>
-<div class="progress-bar"><div class="progress-dot done" id="pd0"></div><div class="progress-dot" id="pd1"></div><div class="progress-dot" id="pd2"></div><div class="progress-dot" id="pd3"></div></div>
-</div>
-<div class="tabs">
-<button class="tab active" onclick="switchTab(0)"><span class="icon">📚</span>Strategies</button>
-<button class="tab" onclick="switchTab(1)"><span class="icon">🧠</span>Quiz</button>
-<button class="tab" onclick="switchTab(2)"><span class="icon">🧮</span>Calculator</button>
-<button class="tab" onclick="switchTab(3)"><span class="icon"></span>Flashcards</button>
-</div>
-<div class="panel active" id="panel0"><div class="section-title">📚 Level 3 Option Strategies</div>
-<p style="font-size:12px;color:var(--muted);margin-bottom:12px">Tap any card to expand. Know these cold for the exam.</p>
-<div class="filter-bar">
-<button class="filter-btn active" onclick="filterStrategies('all')">All</button>
-<button class="filter-btn" onclick="filterStrategies('bull')">Bullish</button>
-<button class="filter-btn" onclick="filterStrategies('bear')">Bearish</button>
-<button class="filter-btn" onclick="filterStrategies('neutral')">Neutral</button>
-<button class="filter-btn" onclick="filterStrategies('risk')">Risk Rules</button>
-</div>
-<div id="strategy-list"></div></div>
-<div class="panel" id="panel1"><div class="section-title">🧠 Practice Quiz</div>
-<div class="score-board">
-<div class="score-item blue"><div class="num" id="q-total">0</div><div class="label">Answered</div></div>
-<div class="score-item green"><div class="num" id="q-correct">0</div><div class="label">Correct</div></div>
-<div class="score-item red"><div class="num" id="q-wrong">0</div><div class="label">Wrong</div></div>
-<div class="score-item amber"><div class="num" id="q-pct">-</div><div class="label">% Score</div></div>
-</div>
-<div id="quiz-container"></div><button class="reset-btn" onclick="resetQuiz()">Reset Quiz</button></div>
-<div class="panel" id="panel2"><div class="section-title"> P&L Calculator</div>
-<p style="font-size:12px;color:var(--muted);margin-bottom:12px">Calculate max profit, max loss, and breakeven for spread strategies.</p>
-<div class="card"><label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px">Strategy Type</label>
-<select id="calc-strategy" onchange="updateCalcFields()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px">
-<option value="bull_call">Bull Call Spread</option><option value="bear_call">Bear Call Spread</option>
-<option value="bull_put">Bull Put Spread</option><option value="bear_put">Bear Put Spread</option>
-<option value="iron_condor">Iron Condor</option></select></div>
-<div class="card"><div class="calc-form" id="calc-fields"></div><button class="calc-btn" onclick="calculate()">Calculate P&L</button></div>
-<div class="calc-result" id="calc-result"></div></div>
-<div class="panel" id="panel3"><div class="section-title">⚡ Flashcards</div>
-<p style="font-size:12px;color:var(--muted);margin-bottom:12px">Tap the card to flip. Study Greeks, terms, and rules.</p>
-<div class="fc-wrap"><div class="flashcard" id="flashcard" onclick="flipCard()">
-<div class="flashcard-content front" id="fc-front"></div>
-<div class="flashcard-content back" id="fc-back"></div>
-</div></div>
-<p class="flashcard-hint">Tap card to flip</p>
-<div class="flash-nav"><button onclick="prevCard()">← Prev</button><button onclick="nextCard()">Next →</button></div>
-<p class="flash-counter" id="fc-counter"></p></div>
-<script>
-const strategies=[
-{title:"Bull Call Spread",badge:"bull",summary:"Buy lower strike call, sell higher strike call. Bullish debit spread.",details:"<b>Setup:</b> Buy call @ lower strike A, Sell call @ higher strike B (same expiration)<br><b>Net:</b> Debit (you pay upfront)<br><b>Max Profit:</b> (B - A) - net debit, × 100<br><b>Max Loss:</b> The net debit paid, × 100<br><b>Breakeven:</b> Lower strike A + net debit<br><b>When to use:</b> Moderately bullish outlook. Reduces cost of a long call.<br><b>Risk:</b> Limited to debit paid."},
-{title:"Bear Call Spread",badge:"bear",summary:"Sell lower strike call, buy higher strike call. Bearish credit spread.",details:"<b>Setup:</b> Sell call @ lower strike A, Buy call @ higher strike B<br><b>Net:</b> Credit (receive money upfront)<br><b>Max Profit:</b> Net credit received, × 100<br><b>Max Loss:</b> (B - A) - net credit, × 100<br><b>Breakeven:</b> Lower strike A + net credit<br><b>When to use:</b> Bearish. Stock stays below short strike.<br><b>Risk:</b> Defined by strike width minus credit."},
-{title:"Bull Put Spread",badge:"bull",summary:"Sell higher strike put, buy lower strike put. Bullish credit spread.",details:"<b>Setup:</b> Sell put @ higher strike A, Buy put @ lower strike B<br><b>Net:</b> Credit<br><b>Max Profit:</b> Net credit received, × 100<br><b>Max Loss:</b> (A - B) - net credit, × 100<br><b>Breakeven:</b> Higher strike A - net credit<br><b>When to use:</b> Moderately bullish. Stock stays above short put.<br><b>Risk:</b> Defined by strike width minus credit."},
-{title:"Bear Put Spread",badge:"bear",summary:"Buy higher strike put, sell lower strike put. Bearish debit spread.",details:"<b>Setup:</b> Buy put @ higher strike A, Sell put @ lower strike B<br><b>Net:</b> Debit<br><b>Max Profit:</b> (A - B) - net debit, × 100<br><b>Max Loss:</b> Net debit paid, × 100<br><b>Breakeven:</b> Higher strike A - net debit<br><b>When to use:</b> Moderately bearish. Reduces cost of outright long put.<br><b>Risk:</b> Limited to debit paid."},
-{title:"Iron Condor",badge:"neutral",summary:"Sell OTM call spread + sell OTM put spread. Neutral, profits from range.",details:"<b>Setup:</b> Sell put @ A, Buy put @ B (B < A); Sell call @ C, Buy call @ D (D > C). Same expiration.<br><b>Net:</b> Credit<br><b>Max Profit:</b> Net credit received, × 100<br><b>Max Loss:</b> Width of either spread - net credit, × 100<br><b>Breakevens:</b> Lower: A - credit; Upper: C + credit<br><b>When to use:</b> Expect stock to stay in a range.<br><b>Risk:</b> Defined. Loss if stock breaks through either spread."},
-{title:"Iron Butterfly",badge:"neutral",summary:"Like iron condor but short strikes at same price (ATM).",details:"<b>Setup:</b> Sell ATM call & put (same strike), Buy OTM call & put as wings.<br><b>Net:</b> Credit<br><b>Max Profit:</b> Net credit × 100. Stock closes at short strike.<br><b>Max Loss:</b> Distance from short strike to wing - credit, × 100.<br><b>When to use:</b> Strong conviction stock stays at one level.<br><b>Risk:</b> Defined. Higher max profit than condor but narrower zone."},
-{title:"Calendar Spread",badge:"neutral",summary:"Sell near-term option, buy longer-term at same strike.",details:"<b>Setup:</b> Sell near-term, Buy same-strike later expiration.<br><b>Net:</b> Usually debit<br><b>Max Profit:</b> Near-term expires worthless, long retains value.<br><b>Best scenario:</b> Stock stays at/near strike. Theta helps.<br><b>Risk:</b> Sharp moves hurt. Near-term loses value quickly."},
-{title:"Diagonal Spread",badge:"neutral",summary:"Like calendar but different strikes. More directional.",details:"<b>Setup:</b> Sell near-term @ strike A, Buy later-term @ strike B.<br><b>Net:</b> Can be debit or credit.<br><b>When to use:</b> Want theta decay with directional bias.<br><b>Risk:</b> Long can lose value if stock moves far from short strike."},
-{title:"Risk Reversal (Collar)",badge:"risk",summary:"Protective put + covered call to finance downside protection.",details:"<b>Setup:</b> Own stock. Buy OTM put. Sell OTM call to finance it.<br><b>Net:</b> Can be near zero (call pays for put)<br><b>Max Loss:</b> Stock price - put strike<br><b>Max Gain:</b> Call strike - stock price<br><b>When to use:</b> Own stock, want protection without paying.<br><b>Risk:</b> Upside capped by short call."}
-];
-const quizQuestions=[
-{q:"What is a bull call spread?",opts:["Buy a lower strike call and sell a higher strike call","Sell a lower strike call and buy a higher strike call","Buy a higher strike put and sell a lower strike put","Buy a call and sell a put at the same strike"],correct:0,explanation:"A bull call spread involves BUYING a lower strike call and SELLING a higher strike call of the same expiration. It's a DEBIT spread because you pay the difference between the two premiums."},
-{q:"In a bear call spread, what is your maximum loss?",opts:["Unlimited","The width of the strikes minus the credit received","Only the credit received","The full stock price"],correct:1,explanation:"Max loss = (difference between strikes) - (credit received) x 100. The short call has unlimited risk but the long call above it caps the loss. Defined-risk strategy."},
-{q:"What does it mean when an option is 'in the money' (ITM)?",opts:["The option has no time value left","The option has intrinsic value — it would have value if exercised today","The option is about to expire","The option is very expensive"],correct:1,explanation:"ITM means the option has intrinsic value. For calls: stock price > strike price. For puts: stock price < strike price. This is the amount the option would be worth if exercised immediately."},
-{q:"What is the breakeven for a bull call spread with strikes at $100 and $105, and a net debit of $2.00?",opts:["$98.00","$100.00","$102.00","$105.00"],correct:2,explanation:"Breakeven = Lower strike ($100) + net debit ($2.00) = $102.00. The stock must rise above $102 for you to profit."},
-{q:"What Greek measures an option's sensitivity to changes in implied volatility?",opts:["Delta","Gamma","Theta","Vega"],correct:3,explanation:"Vega measures the change in an option's price for a 1% change in implied volatility. High IV means expensive options (favorable for sellers). Low IV means cheap options (favorable for buyers)."},
-{q:"What does 'theta' measure?",opts:["Price sensitivity to the stock","Price sensitivity to volatility","Rate of time decay per day","Price sensitivity to interest rates"],correct:2,explanation:"Theta is the rate of time decay — how much value an option loses each day as it approaches expiration. Short options benefit from theta (they lose value, good when you're short). Long options suffer from it."},
-{q:"In an iron condor, when do you make the maximum profit?",opts:["When the stock moves up significantly","When the stock moves down significantly","When the stock stays between the short strikes","When the stock hits either breakeven"],correct:2,explanation:"An iron condor profits when the stock stays in a RANGE between your two short strikes. Maximum profit = net credit received, achieved if stock closes between both short strikes at expiration."},
-{q:"When options are assigned (exercised against you), who is responsible?",opts:["The option buyer","The option seller (writer)","The broker","The exchange"],correct:1,explanation:"The option SELLER (writer) is always responsible when assigned/exercised. If you sold a call and it's exercised, you must deliver shares at the strike. If you sold a put, you must buy shares at the strike."},
-{q:"If you sell a cash-secured put and the stock drops below strike at expiration, what happens?",opts:["You keep the premium and nothing else happens","You buy the stock at the strike price","You lose all your cash in the account","The option expires worthless"],correct:1,explanation:"A cash-secured put that goes ITM will be assigned, and you are obligated to BUY the stock at the strike price. Your effective cost basis = strike - premium received."},
-{q:"What does a delta of 0.50 mean for an option?",opts:["The option costs $50","The option price moves ~$0.50 for every $1 move in the stock","It has 50 days until expiration","There is a 50% chance of profit"],correct:1,explanation:"Delta tells you approximately how much the option price will change per $1 move in the underlying stock. A 0.50 delta means ~$0.50 change per $1 stock move. Delta also loosely approximates probability of ITM expiration."},
-{q:"Which strategy would you use if you are moderately bullish and want to reduce the cost of buying a call?",opts:["Bear call spread","Bull put spread","Bull call spread","Iron condor"],correct:2,explanation:"A bull call spread (buy lower strike call, sell higher strike call) is a debit spread where the sold call helps finance the bought call. You sacrifice some upside for a lower entry cost."},
-{q:"What is 'assignment risk'?",opts:["The risk that your broker shuts down your account","The risk that a short option is exercised against you before or at expiration","The risk that the stock goes to zero","The risk that your option expires worthless"],correct:1,explanation:"Assignment risk is the possibility that the buyer of an option you sold exercises it. This can happen before expiration (American-style) or at expiration. As the seller, you are obligated to fulfill the contract."},
-{q:"What is the maximum profit on a credit spread?",opts:["Unlimited","The net credit received","The width of strikes","Zero"],correct:1,explanation:"A credit spread's maximum profit is the net credit received. This occurs when both options expire worthless, which happens if the stock stays beyond the short strike in the right direction."},
-{q:"Gamma risk is highest when:",opts:["The option is deep ITM","The option is deep OTM","The option is near expiration and near the strike","Volatility is very high"],correct:2,explanation:"Gamma measures how fast delta changes. It peaks when options are near expiration AND at (or near) the strike price. Small stock movements can cause large delta swings near expiry."},
-{q:"A covered call involves:",opts:["Buying a call without owning the stock","Owning stock and selling a call option against it","Buying a put to protect stock","Selling a put to buy stock"],correct:1,explanation:"A covered call means you own 100 shares of stock and sell (write) a call option against those shares. You collect premium but give up upside above the strike."},
-{q:"What happens when you 'roll' an option position?",opts:["You close the current position and open a new one with different terms","You exercise the option early","You let it expire","You sell it at a loss"],correct:0,explanation:"Rolling means closing your current option position and opening a new one — typically a later expiration, different strike, or both. Used to extend the trade, adjust risk, or avoid assignment."},
-{q:"The 'buying power effect' in options refers to:",opts:["How much cash you have in your account","The amount of margin/collateral needed to maintain a position","The total value of your portfolio","The price of the option"],correct:1,explanation:"The buying power effect is the margin requirement — how much capital is set aside to hold the position. For defined-risk strategies like spreads, it equals the max possible loss."},
-{q:"Level 3 options approval on Robinhood typically allows:",opts:["Covered calls and cash-secured puts","All single-leg options (calls and puts)","Options spreads (multi-leg strategies)","Naked (uncovered) calls"],correct:2,explanation:"Level 3 is where spreads are unlocked: credit spreads, debit spreads, iron condors, and other multi-leg strategies. These involve both buying and selling options simultaneously, creating defined-risk positions."},
-{q:"If you own a debit spread and the stock moves strongly in your favor, what happens?",opts:["You can lose more than you paid","Your profit is capped at the spread width minus what you paid","The loss is unlimited","You must add more money"],correct:1,explanation:"A debit spread's profit is CAPPED. For a bull call spread bought at $100/$105 for $2, max profit = ($105 - $100) - $2 = $3 per share = $300 total. Even if the stock goes to $200."},
-{q:"What is the difference between American-style and European-style options?",opts:["American options cost more","American options can be exercised anytime before expiration; European only at expiration","European options are only for international stocks","There is no difference"],correct:1,explanation:"American-style options (most equity options) can be exercised at any point before expiration. European-style (index options like SPX) can only be exercised at expiration. This matters for assignment risk."},
-{q:"What is implied volatility (IV)?",opts:["How much the stock has moved in the past","The market's forecast of future volatility, built into the option's price","The volume of options traded","The interest rate used in pricing"],correct:1,explanation:"IV is NOT historical movement — it's the market's EXPECTED future volatility, baked into the option premium. High IV = expensive options (good time to sell). Low IV = cheap options (good time to buy)."},
-{q:"For a bear put spread, what is the maximum loss?",opts:["Unlimited","The net debit paid","The width of the strikes","Zero"],correct:1,explanation:"A bear put spread is a debit spread. Max loss = the net debit you paid to open it. Occurs if the stock stays above the long put strike and both options expire worthless."},
-{q:"What is 'pin risk' at expiration?",opts:["Your account is restricted","The stock price closes right at the strike price, creating uncertain assignment","You lose money from fees","Your positions are liquidated"],correct:1,explanation:"Pin risk happens when the stock closes very close to a short option's strike at expiration. You don't know if you'll be assigned. Best to close or roll positions on expiration day to avoid this."},
-{q:"What does 'opening to buy' vs 'opening to sell' mean?",opts:["Buy means you're buying stock; sell means selling stock","Opening to buy = entering a long position; Opening to sell = entering a short position","They are the same thing","Only applies to stock, not options"],correct:1,explanation:"Opening to Buy = you are opening a long position (buying an option). Opening to Sell = you are opening a short position (selling/writing an option). Short positions create obligations; long positions give you rights."},
-{q:"How does an earnings announcement typically affect option prices?",opts:["No effect","Options get cheaper because the stock is predictable","Options get more expensive because IV rises before earnings","Options stop trading"],correct:2,explanation:"IV typically RISES before earnings because of uncertainty. Options get more expensive. After earnings, IV drops sharply ('IV crush'), hurting long option holders and benefiting short option sellers."},
-{q:"If you sell a credit spread and the stock moves against you significantly, what should you know?",opts:["You can only lose the credit you received","Your max loss is the spread width minus the credit received and it's fixed","You owe the full stock price","Your account is frozen"],correct:1,explanation:"Even when a trade goes against you, a spread's max loss is defined: (spread width - credit) x 100. This is the key benefit of spreads vs. naked positions."},
-{q:"What is the 'bid-ask spread' in options?",opts:["The commission you pay","The difference between the highest price a buyer will pay and the lowest a seller will accept","The profit you make","The difference between two strikes"],correct:1,explanation:"The bid-ask spread is the gap between the best bid (what buyers offer) and best ask (what sellers want). Wide bid-ask spreads mean less liquid options. Always use limit orders, not market orders, for options."},
-{q:"When does a short option have the highest risk of early assignment?",opts:["When it is deep OTM","When it is deep ITM with very little time value remaining","When the stock price equals the strike","Never — American options can't be assigned early"],correct:1,explanation:"Early assignment is most likely when a short option is deep ITM AND has very little or no time value. Dividends can also trigger early exercise on calls."},
-{q:"What is the leverage advantage of options over buying stock?",opts:["Options are always cheaper","Controls 100 shares per contract for a fraction of the stock price","Options never expire","Options guarantee profit"],correct:1,explanation:"One option contract controls 100 shares. Buying 100 shares at $50 = $5,000. A $50 call might cost $200 ($2 x 100). You control the same 100 shares for much less capital. But time decay and missed moves can wipe out the cheaper premium."},
-{q:"What are the upper and lower breakevens for an iron condor with: Short put $95, Short call $105, Net credit $3?",opts:["Lower: $92, Upper: $108","Lower: $95, Upper: $105","Lower: $98, Upper: $102","Lower: $97, Upper: $107"],correct:0,explanation:"Lower breakeven = $95 - $3 = $92. Upper breakeven = $105 + $3 = $108. You profit if the stock stays between $92 and $108."}
-];
-const flashcards=[
-{front:"What is Delta?",back:"Delta measures the change in option price per $1 move in the underlying stock. Call delta: 0 to 1. Put delta: -1 to 0. Also approximates probability of ITM at expiration."},
-{front:"What is Gamma?",back:"Gamma measures how much Delta changes per $1 move in the stock. Highest near expiration and at-the-money. Creates 'gamma risk' — rapid P&L swings on expiration day."},
-{front:"What is Theta?",back:"Theta is time decay. The daily dollar amount an option loses as expiration approaches. Short options benefit (they 'earn' theta). Long options lose value from theta."},
-{front:"What is Vega?",back:"Vega measures sensitivity to implied volatility. A 1% increase in IV changes the option price by the Vega amount. High IV = expensive options. Low IV = cheap options."},
-{front:"Long Call: Max Profit?",back:"Unlimited. The stock could theoretically go to infinity. You paid a premium upfront. Breakeven = strike + premium."},
-{front:"Long Call: Max Loss?",back:"Limited to the premium paid. If the stock stays below the strike at expiration, the option expires worthless and you lose everything you paid."},
-{front:"Short Call: Max Profit?",back:"Limited to the premium received. You keep the entire premium if the option expires worthless (stock stays below strike)."},
-{front:"Short Call: Max Loss?",back:"UNLIMITED (if uncovered/naked). The stock can rise infinitely and you're obligated to sell at the strike. This is why naked calls are the riskiest strategy."},
-{front:"Long Put: Max Profit?",back:"Substantial but limited. Stock can only go to $0. Max profit = strike - premium, x 100. Breakeven = strike - premium."},
-{front:"Short Put: Max Loss?",back:"Substantial but defined. = (strike - premium) x 100. If the stock goes to $0, you must buy at the strike. You lose strike minus the premium you collected."},
-{front:"Bull Call Spread: When profitable?",back:"When the stock rises above the breakeven (lower strike + debit paid). Maximum profit is reached if stock closes above the higher strike at expiration."},
-{front:"Bear Call Spread: When profitable?",back:"When the stock stays BELOW the lower (short) strike at expiration. Maximum profit = credit received. Loss occurs if stock rises above breakeven."},
-{front:"Bull Put Spread: When profitable?",back:"When the stock stays ABOVE the higher (short) strike at expiration. Maximum profit = credit received. Loss if stock drops below breakeven."},
-{front:"Bear Put Spread: When profitable?",back:"When the stock falls below the breakeven (higher strike - debit paid). Maximum profit if stock closes below the lower strike."},
-{front:"Intrinsic Value vs. Time Value",back:"Intrinsic = what the option is worth if exercised today (ITM amount). Time Value = the extra premium for the possibility of future movement. Total premium = intrinsic + time value. OTM options are 100% time value."},
-{front:"What is a Debit Spread?",back:"You pay money to open the trade (buy one option, sell another at a less favorable strike). Examples: Bull call spread, Bear put spread. Limited loss = the debit paid. Profit is capped at spread width - debit."},
-{front:"What is a Credit Spread?",back:"You receive money to open the trade (sell a more expensive option, buy a cheaper one). Examples: Bear call spread, Bull put spread. Max profit = the credit received. Risk is defined by spread width."},
-{front:"Assignment Risk",back:"If you're SHORT an option, the buyer can exercise it. You must fulfill the obligation: deliver shares (short call) or buy shares (short put). Can happen early (American) or at expiration. Always manage short positions before expiration day."},
-{front:"What is IV Crush?",back:"Implied Volatility drops sharply after a catalyst (earnings, FDA decision, etc.). Options lose value rapidly. Hurts long option holders. Benefits short option sellers. This is why selling options before earnings and buying back after can be profitable."},
-{front:"What is Pin Risk?",back:"When stock closes very near your short strike at expiration. You don't know if you'll be assigned. Could wake up Monday with unexpected long or short stock. Always close or roll near-the-money positions before close."},
-{front:"Covered Call = ?",back:"Own 100 shares + Sell 1 call against them. Bullish-to-neutral. You collect premium but cap your upside at the call strike. If stock is called away, you still profit from stock gain up to strike plus premium."},
-{front:"Protective Put = ?",back:"Own stock + Buy a put for downside protection. Acts like insurance. Breakeven rises by the put cost. Max loss = stock price - put strike - put premium. You keep all upside above breakeven."},
-{front:"Level 1 Options = ?",back:"Covered calls, Cash-secured puts. Basic single-leg strategies. Minimum approval level. Low risk because your stock position or cash covers your obligation."},
-{front:"Level 2 Options = ?",back:"Long calls, Long puts, Protective puts. Single-leg directional bets. Requires buying options. Risk limited to premium paid (for longs)."},
-{front:"Level 3 Options = ?",back:"Options spreads: Bull call spreads, Bear call spreads, Bull put spreads, Bear put spreads, Iron condors, Iron butterflies. Multi-leg defined-risk strategies."},
-{front:"What is a Limit Order?",back:"An order to buy or sell at a specific price or better. ALWAYS use limit orders for options. Market orders can fill at terrible prices due to wide bid-ask spreads."},
-{front:"Contract Multiplier",back:"Every standard equity option contract represents 100 shares. So a $2.00 option premium = $200 total cost. A spread width of $5 = $500 per contract range."},
-{front:"Rolling a Position",back:"Closing your current option and simultaneously opening a new one — usually later in time, different strike, or both. Used to extend a trade, avoid assignment, or reduce losses."},
-{front:"What is Rho?",back:"Rho measures sensitivity to interest rate changes. Least important Greek for most traders. Calls have positive rho, puts have negative rho. Significant only for very long-dated options (LEAPS)."},
-{front:"Max Profit: Iron Condor",back:"Max profit = Net credit received x 100. Achieved if stock stays between the two short strikes at expiration. Max loss = Width of either spread - credit, x 100."}
-];
-let currentTab=0,quizAnswered={},qCorrect=0,qWrong=0,fcIndex=0,fcFlipped=false;
-try{const s=JSON.parse(localStorage.getItem('optStudyQuiz')||'{}');quizAnswered=s.answers||{};qCorrect=s.correct||0;qWrong=s.wrong||0;}catch(e){}
-function switchTab(i){currentTab=i;document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',j===i));for(let j=0;j<4;j++){const d=document.getElementById('pd'+j);d.classList.toggle('done',j<i);d.classList.toggle('active',j===i);}}
-function renderStrategies(f){const l=document.getElementById('strategy-list');let fl=f==='all'?strategies:strategies.filter(s=>s.badge===f);l.innerHTML=fl.map((s,i)=>`<div class="card strategy-card" data-badge="${s.badge}"><div style="display:flex;justify-content:space-between;align-items:center"><h3>${s.title}</h3><span class="badge badge-${s.badge}">${s.badge}</span></div><p style="margin-top:4px">${s.summary}</p><div class="expand-content" id="exp-${f}-${i}">${s.details.replace(/\\n/g,'<br>')}</div><button class="expand-btn" onclick="toggleExpand('exp-${f}-${i}', this)">&#9660; Details</button></div>`).join('');}
-function toggleExpand(id,btn){const el=document.getElementById(id);const show=!el.classList.contains('show');el.classList.toggle('show',show);btn.innerHTML=show?'&#9650; Hide':'&#9660; Details';}
-function filterStrategies(f){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');renderStrategies(f);}
-function renderQuiz(){const c=document.getElementById('quiz-container');c.innerHTML=quizQuestions.map((q,i)=>`<div class="quiz-q" id="qq-${i}"><div class="q-num">Question ${i+1} of ${quizQuestions.length}</div><div class="q-text">${q.q}</div><div id="opts-${i}">${q.opts.map((o,j)=>`<button class="quiz-opt${quizAnswered[i]!==undefined?' disabled':''}${quizAnswered[i]===j&&j===q.correct?' correct':''}${quizAnswered[i]===j&&j!==q.correct?' wrong':''}${quizAnswered[i]!==undefined&&j===q.correct?' correct':''}" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}</div><div class="explanation ${quizAnswered[i]!==undefined?'show':''}" id="expl-${i}">${q.explanation||''}</div></div>`).join('');updateScore();}
-function answerQuiz(qi,oi){if(quizAnswered[qi]!==undefined)return;const q=quizQuestions[qi];quizAnswered[qi]=oi;if(oi===q.correct)qCorrect++;else qWrong++;localStorage.setItem('optStudyQuiz',JSON.stringify({answers:quizAnswered,correct:qCorrect,wrong:qWrong}));const opts=document.querySelectorAll(`#opts-${qi} .quiz-opt`);opts.forEach((o,j)=>{o.classList.add('disabled');if(j===q.correct)o.classList.add('correct');if(j===oi&&j!==q.correct)o.classList.add('wrong');});document.getElementById(`expl-${qi}`).classList.add('show');updateScore();}
-function updateScore(){const t=qCorrect+qWrong;document.getElementById('q-total').textContent=t;document.getElementById('q-correct').textContent=qCorrect;document.getElementById('q-wrong').textContent=qWrong;document.getElementById('q-pct').textContent=t>0?Math.round(qCorrect/t*100)+'%':'-';}
-function resetQuiz(){if(!confirm('Reset all quiz progress?'))return;quizAnswered={};qCorrect=0;qWrong=0;localStorage.setItem('optStudyQuiz',JSON.stringify({answers:{},correct:0,wrong:0}));renderQuiz();}
-function updateCalcFields(){const s=document.getElementById('calc-strategy').value;const f=document.getElementById('calc-fields');document.getElementById('calc-result').classList.remove('show');const t={bull_call:[{label:'Long Call Strike',id:'lStrike',type:'number'},{label:'Short Call Strike',id:'sStrike',type:'number'},{label:'Net Debit ($)',id:'debit',type:'number',step:'0.01'}],bear_call:[{label:'Short Call Strike',id:'sStrike',type:'number'},{label:'Long Call Strike',id:'lStrike',type:'number'},{label:'Net Credit ($)',id:'credit',type:'number',step:'0.01'}],bull_put:[{label:'Short Put Strike',id:'sStrike',type:'number'},{label:'Long Put Strike',id:'lStrike',type:'number'},{label:'Net Credit ($)',id:'credit',type:'number',step:'0.01'}],bear_put:[{label:'Long Put Strike',id:'lStrike',type:'number'},{label:'Short Put Strike',id:'sStrike',type:'number'},{label:'Net Debit ($)',id:'debit',type:'number',step:'0.01'}],iron_condor:[{label:'Short Put Strike',id:'spStrike',type:'number'},{label:'Long Put Strike',id:'lpStrike',type:'number'},{label:'Short Call Strike',id:'scStrike',type:'number'},{label:'Long Call Strike',id:'lcStrike',type:'number'},{label:'Net Credit ($)',id:'credit',type:'number',step:'0.01'}]};f.innerHTML='<div class="section-title" style="font-size:13px">Enter Values</div>'+t[s].map(x=>`<div class="calc-row"><label>${x.label}</label><input type="${x.type}" id="${x.id}" step="${x.step||'1'}"/></div>`).join('');}
-function calculate(){const s=document.getElementById('calc-strategy').value;const r=document.getElementById('calc-result');let html='';const gv=id=>{const el=document.getElementById(id);return el?parseFloat(el.value):NaN;};if(s==='bull_call'){const ls=gv('lStrike'),ss=gv('sStrike'),d=gv('debit');if([ls,ss,d].some(isNaN)){r.innerHTML='<p style="color:var(--danger)">Please fill in all fields.</p>';r.classList.add('show');return;}const mp=((ss-ls)-d)*100,ml=d*100,be=ls+d;html=`<div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Profit</span><br><span class="val green">$${mp.toFixed(2)}</span></div><div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Loss</span><br><span class="val red">$${ml.toFixed(2)}</span></div><div><span style="font-size:12px;color:var(--muted)">Breakeven</span><br><span class="val" style="color:var(--accent)">$${be.toFixed(2)}</span></div><div class="detail">Stock must close above $${be.toFixed(2)} to profit.</div>`;}else if(s==='bear_call'){const ss=gv('sStrike'),ls=gv('lStrike'),c=gv('credit');if([ss,ls,c].some(isNaN)){r.innerHTML='<p style="color:var(--danger)">Please fill in all fields.</p>';r.classList.add('show');return;}const mp=c*100,ml=((ls-ss)-c)*100,be=ss+c;html=`<div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Profit</span><br><span class="val green">$${mp.toFixed(2)}</span></div><div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Loss</span><br><span class="val red">$${ml.toFixed(2)}</span></div><div><span style="font-size:12px;color:var(--muted)">Breakeven</span><br><span class="val" style="color:var(--accent)">$${be.toFixed(2)}</span></div><div class="detail">Stock must stay below $${be.toFixed(2)}.</div>`;}else if(s==='bull_put'){const ss=gv('sStrike'),ls=gv('lStrike'),c=gv('credit');if([ss,ls,c].some(isNaN)){r.innerHTML='<p style="color:var(--danger)">Please fill in all fields.</p>';r.classList.add('show');return;}const mp=c*100,ml=((ss-ls)-c)*100,be=ss-c;html=`<div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Profit</span><br><span class="val green">$${mp.toFixed(2)}</span></div><div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Loss</span><br><span class="val red">$${ml.toFixed(2)}</span></div><div><span style="font-size:12px;color:var(--muted)">Breakeven</span><br><span class="val" style="color:var(--accent)">$${be.toFixed(2)}</span></div><div class="detail">Stock must stay above $${be.toFixed(2)}.</div>`;}else if(s==='bear_put'){const ls=gv('lStrike'),ss=gv('sStrike'),d=gv('debit');if([ls,ss,d].some(isNaN)){r.innerHTML='<p style="color:var(--danger)">Please fill in all fields.</p>';r.classList.add('show');return;}const mp=((ls-ss)-d)*100,ml=d*100,be=ls-d;html=`<div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Profit</span><br><span class="val green">$${mp.toFixed(2)}</span></div><div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Loss</span><br><span class="val red">$${ml.toFixed(2)}</span></div><div><span style="font-size:12px;color:var(--muted)">Breakeven</span><br><span class="val" style="color:var(--accent)">$${be.toFixed(2)}</span></div><div class="detail">Stock must close below $${be.toFixed(2)} to profit.</div>`;}else if(s==='iron_condor'){const sp=gv('spStrike'),lp=gv('lpStrike'),sc=gv('scStrike'),lc=gv('lcStrike'),c=gv('credit');if([sp,lp,sc,lc,c].some(isNaN)){r.innerHTML='<p style="color:var(--danger)">Please fill in all fields.</p>';r.classList.add('show');return;}const mp=c*100,ps=(sp-lp)-c,cs=(lc-sc)-c,ml=Math.max(ps,cs)*100,bL=sp-c,bU=sc+c;html=`<div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Profit</span><br><span class="val green">$${mp.toFixed(2)}</span></div><div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Max Loss</span><br><span class="val red">$${ml.toFixed(2)}</span></div><div style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Lower Breakeven</span><br><span class="val" style="color:var(--accent)">$${bL.toFixed(2)}</span></div><div><span style="font-size:12px;color:var(--muted)">Upper Breakeven</span><br><span class="val" style="color:var(--accent)">$${bU.toFixed(2)}</span></div><div class="detail">Profit zone: $${bL.toFixed(2)} to $${bU.toFixed(2)}.</div>`;}r.innerHTML=html;r.classList.add('show');}
+<div class="container">
+<h1>Velma-Dinkly Projects</h1>
+<p class="subtitle">Von's Projects -- Built with Hermes Agent</p>
 
-function showFlashcard(){
-  const fc=flashcards[fcIndex];
-  document.getElementById('fc-front').textContent=fc.front;
-  document.getElementById('fc-back').textContent=fc.back;
-  document.getElementById('fc-counter').textContent=`${fcIndex+1} / ${flashcards.length}`;
-  fcFlipped=false;
-  document.getElementById('flashcard').classList.remove('flipped');
-}
+<a class="card" href="./study-guide">
+<h2>Options Level 3 Study Guide</h2>
+<p>Interactive study app: 30 quiz questions, 9 strategy cards, P&L calculator, 30 flashcards. For Robinhood Level 3 options approval.</p>
+<span class="tag">Study Tool</span> <span class="tag">Options Trading</span>
+</a>
 
-let isFlipping=false;
-function flipCard(){
-  if(isFlipping)return;
-  const card=document.getElementById('flashcard');
-  card.style.opacity='0';
-  isFlipping=true;
-  setTimeout(()=>{
-    fcFlipped=!fcFlipped;
-    card.classList.toggle('flipped',fcFlipped);
-    card.style.opacity='1';
-    isFlipping=false;
-  },200);
-}
-function nextCard(){fcIndex=(fcIndex+1)%flashcards.length;showFlashcard();}
-function prevCard(){fcIndex=(fcIndex-1+flashcards.length)%flashcards.length;showFlashcard();}
-renderStrategies('all');renderQuiz();updateCalcFields();showFlashcard();
-</script>
+<a class="card" href="./dr-dentrepreneur-plan">
+<h2>Dr. Dentrepreneur -- 30-Day Launch Plan</h2>
+<p>Complete roadmap to launch the dental coaching brand: branding, content, funnel, podcast, course, mastermind. Revenue target: $38K/mo by month 12.</p>
+<span class="tag">Business Plan</span> <span class="tag">Dr. Dentrepreneur</span>
+</a>
+
+<p class="footer">Built by Von (Hermes Agent)</p>
+</div>
 </body>
 </html>
