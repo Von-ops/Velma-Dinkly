@@ -3,30 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Von Empire</title>
+  <title>Von Empire — Hub</title>
   <style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,sans-serif}
+  *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,Inter,sans-serif}
   body{background:#050508;color:#e2e8f0;min-height:100vh;padding:20px}
-  .c{max-width:500px;margin:0 auto}
-  h1{font-size:18px;font-weight:800;text-align:center;color:#FFD700;margin-bottom:4px;letter-spacing:1px}
-  .s{text-align:center;color:#64748b;font-size:11px;margin-bottom:20px}
-  .card{background:#0e0e18;border:1px solid #1e1e30;border-radius:12px;padding:14px;margin-bottom:8px;text-decoration:none;color:inherit;display:block;transition:.2s}
-  .card:hover{border-color:#FFD700}
-  .card h2{font-size:14px;font-weight:700;margin-bottom:4px}
-  .card p{font-size:11px;color:#64748b}
-  .tag{display:inline-block;font-size:9px;padding:2px 6px;border-radius:4px;background:#1e293b;color:#94a3b8;margin-right:4px;margin-top:4px}
-  .ft{text-align:center;color:#334155;font-size:9px;margin-top:16px}
+  .c{max-width:600px;margin:0 auto}
+  h1{font-size:22px;font-weight:800;text-align:center;margin-bottom:4px;letter-spacing:-0.5px}
+  h1 span{background:linear-gradient(135deg,#FFD700,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{text-align:center;color:#64748b;font-size:12px;margin-bottom:24px}
+  .section-title{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1.5px;margin:20px 0 10px;font-weight:700}
+  .card{background:#0e0e1a;border:1px solid #1a1a2e;border-radius:14px;padding:16px;margin-bottom:10px;text-decoration:none;color:inherit;display:block;transition:.2s}
+  .card:hover{border-color:#6366f1}
+  .card h2{font-size:15px;font-weight:700;margin-bottom:4px}
+  .card p{font-size:12px;color:#64748b;line-height:1.4}
+  .card .tags{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+  .card .tag{font-size:9px;padding:2px 6px;border-radius:4px;background:#1a1a2e;color:#94a3b8}
+  .card .tag.new{background:rgba(99,102,241,0.2);color:#6366f1}
+  .card .tag.primary{background:rgba(16,192,118,0.2);color:#00c076}
+  .card .tag.live{background:rgba(255,215,0,0.2);color:#FFD700}
+  .ft{text-align:center;color:#334155;font-size:10px;margin-top:24px}
   </style>
 </head>
 <body>
   <div class="c">
-    <h1>QUE VON EMPIRE</h1>
-    <p class="s">Agent Operating System + Projects</p>
-    <a class="card" href="./empire-os"><h2>QUE Von Empire OS (NEW)</h2><p>Wakanda-themed OS - chat, tools, ventures, revenue tracker.</p><span class="tag">OS</span><span class="tag">Wakanda</span></a>
-    <a class="card" href="./dashboard"><h2>Empire Dashboard</h2><p>All ventures, KPIs, timelines.</p><span class="tag">Dashboard</span></a>
-    <a class="card" href="./dr-dentrepreneur-plan"><h2>Dr. Dentrepreneur Plan</h2><p>30-day launch roadmap.</p><span class="tag">Business</span></a>
-    <a class="card" href="./study-guide"><h2>Options Study Guide</h2><p>Level 3 exam prep.</p><span class="tag">Study</span></a>
-    <p class="ft">Built by Von & Velma</p>
+    <h1>👑 <span>Von Empire</span></h1>
+    <p class="sub">Agent OS + Live Platform — Built by Von & Velma</p>
+    
+    <div class="section-title">🚀 Live Platforms</div>
+    
+    <a class="card" href="./trading-wiz/">
+      <h2>📈 Trading Wiz Platform <span class="tag new">NEW</span></h2>
+      <p>Live financial dashboard with watchlist, LEAPS screener, portfolio tracker, options chain viewer, and alerts system.</p>
+      <div class="tags"><span class="tag live">Live</span><span class="tag">Trading</span><span class="tag">LEAPS</span></div>
+    </a>
+    
+    <a class="card" href="./empire-os">
+      <h2>🐾 QUE Von Empire OS</h2>
+      <p>Wakanda-themed dashboard with chat, tools, ventures, and revenue tracker.</p>
+      <div class="tags"><span class="tag">OS</span><span class="tag">Wakanda</span></div>
+    </a>
+    
+    <a class="card" href="./study-guide">
+      <h2>📈 Options Study App</h2>
+      <p>Level 3 exam prep: 30 questions, 9 strategies, P&L calculator, 30 flashcards.</p>
+      <div class="tags"><span class="tag">Study</span><span class="tag">Options</span></div>
+    </a>
+    
+    <div class="section-title">📋 Agent OS (Markdown)</div>
+    
+    <a class="card" href="https://github.com/Von-ops/Velma-Dinkly/tree/main/agent-os">
+      <h2>🧠 Agent OS — GitHub</h2><p>Full folder structure with AGENTS.md, memory, projects, workflows, templates.</p>
+      <div class="tags"><span class="tag new">NEW</span><span class="tag">AI OS</span><span class="tag">Markdown</span></div>
+    </a>
+    
+    <a class="card" href="./dr-dentrepreneur-plan">
+      <h2>🦷 Dr. Dentrepreneur Plan</h2><p>30-day launch roadmap to $38K/mo revenue.</p>
+      <div class="tags"><span class="tag primary">Primary</span><span class="tag">Business</span></div>
+    </a>
+    
+    <a class="card" href="https://github.com/Von-ops">
+      <h2>👤 Von's GitHub</h2><p>Profile & all projects.</p>
+      <div class="tags"><span class="tag">Profile</span></div>
+    </a>
+    
+    <p class="ft">Von Empire v2.0 | Agent OS + Financial Platform | Built with ❤️</p>
   </div>
 </body>
 </html>
