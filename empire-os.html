@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Von Empire OS — Wakanda</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Noto+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-primary: #020206;
+  --bg-secondary: #0a0a12;
+  --bg-panel: #0e0e18;
+  --bg-card: #12121f;
+  --bg-hover: #1a1a2e;
+  --gold-primary: #FFD700;
+  --gold-dark: #B8860B;
+  --gold-light: #FFE44D;
+  --gold-glow: rgba(255, 215, 0, 0.15);
+  --purple-primary: #7B2D8E;
+  --purple-light: #9B59B6;
+  --purple-dark: #4A1A5E;
+  --purple-glow: rgba(123, 45, 142, 0.3);
+  --vibranium: #4FC3F7;
+  --vibranium-glow: rgba(79, 195, 247, 0.2);
+  --text-primary: #E8E6E3;
+  --text-secondary: #9A9AAB;
+  --text-muted: #5A5A6A;
+  --border-color: #1E1E30;
+  --border-gold: rgba(255, 215, 0, 0.2);
+  --success: #00E676;
+  --warning: #FFB300;
+  --danger: #FF5252;
+  --font-display: 'Orbitron', monospace;
+  --font-ui: 'Rajdhani', sans-serif;
+  --font-body: 'Noto Sans', sans-serif;
+  --sidebar-width: 60px;
+  --sub-sidebar-width: 220px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg-primary); color:var(--text-primary); font-family:var(--font-body); overflow:hidden; height:100vh; display:flex; }
+
+/* ═══ HEXAGONAL PATTERN OVERLAY ═══ */
+body::before {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100M0 50L28 66' fill='none' stroke='%23FFD70010' stroke-width='.5'/%3E%3C/svg%3E");
+  opacity: 0.3;
+}
+
+/* ═══ GLOW LINE DIVIDERS ═══ */
+.glow-line { height:1px; background:linear-gradient(90deg, transparent, var(--gold-dark), var(--gold-primary), var(--gold-dark), transparent); opacity:0.4; }
+.glow-line-purple { height:1px; background:linear-gradient(90deg, transparent, var(--purple-dark), var(--purple-primary), transparent); opacity:0.3; }
+
+/* ═══ MAIN SIDEBAR ═══ */
+.main-sidebar {
+  width: var(--sidebar-width); background: var(--bg-secondary);
+  border: 1px solid var(--border-gold); display:flex; flex-direction:column;
+  align-items:center; padding:8px 0; z-index:10; position:relative;
+}
+.main-sidebar::after {
+  content:''; position:absolute; right:-1px; top:0; bottom:0; width:1px;
+  background: linear-gradient(to bottom, transparent, var(--gold-primary), transparent);
+  opacity: 0.5;
+}
+
+.logo {
+  width:40px; height:40px; border-radius:50%; border:2px solid var(--gold-primary);
+  display:flex; align-items:center; justify-content:center; font-size:18px;
+  margin-bottom:12px; position:relative;
+  box-shadow: 0 0 12px var(--gold-glow), inset 0 0 8px var(--gold-glow);
+}
+
+.sidebar-icons { display:flex; flex-direction:column; gap:4px; flex:1; width:100%; padding:0 8px; }
+.sidebar-btn {
+  width:44px; height:44px; border-radius:10px; border:none; background:transparent;
+  color:var(--text-muted); cursor:pointer; display:flex; align-items:center; justify-content:center;
+  font-size:18px; transition: all .2s; position:relative;
+}
+.sidebar-btn:hover { background:var(--bg-hover); color:var(--gold-primary); }
+.sidebar-btn.active { background:var(--gold-glow); color:var(--gold-primary); border:1px solid var(--border-gold); }
+.sidebar-btn.active::before {
+  content:''; position:absolute; left:-8px; top:50%; transform:translateY(-50%);
+  width:3px; height:20px; background:var(--gold-primary); border-radius:2px;
+}
+.sidebar-btn .label {
+  position:absolute; left:52px; background:var(--bg-card); border:1px solid var(--border-gold);
+  border-radius:6px; padding:4px 8px; font-size:11px; font-family:var(--font-ui);
+  white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .2s; color:var(--text-primary);
+}
+.sidebar-btn:hover .label { opacity:1; }
+
+/* ═══ SUB SIDEBAR ═══ */
+.sub-sidebar {
+  width: var(--sub-sidebar-width); background: var(--bg-panel); border-right:1px solid var(--border-color);
+  display:flex; flex-direction:column; z-index:5;
+}
+.sub-sidebar-header {
+  padding:12px 14px; border-bottom:1px solid var(--border-color);
+  display:flex; align-items:center; gap:8px;
+}
+.sub-sidebar-header h2 { font-family:var(--font-display); font-size:10px; letter-spacing:1.5px; color:var(--gold-primary); text-transform:uppercase; }
+.vibranium-dot { width:6px; height:6px; border-radius:50%; background:var(--purple-primary); box-shadow:0 0 6px var(--purple-glow); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+.workspace-list { flex:1; overflow-y:auto; padding:8px; }
+.workspace-item {
+  padding:10px 12px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:8px;
+  font-family:var(--font-ui); font-size:14px; transition:all .2s; margin-bottom:2px;
+}
+.workspace-item:hover { background:var(--bg-hover); }
+.workspace-item.active { background:var(--gold-glow); border-left:2px solid var(--gold-primary); }
+.workspace-item .icon { font-size:16px; }
+.workspace-item .name { color:var(--text-primary); }
+.workspace-item .meta { font-size:10px; color:var(--text-muted); margin-left:auto; }
+.workspace-item .status-dot { width:6px; height:6px; border-radius:50%; background:var(--success); margin-left:4px; }
+
+.recent-title {
+  padding:8px 12px; font-family:var(--font-display); font-size:8px; letter-spacing:1.5px;
+  color:var(--text-muted); text-transform:uppercase;
+}
+.recent-item {
+  padding:8px 12px; border-radius:6px; cursor:pointer; font-size:12px; color:var(--text-secondary);
+  display:flex; align-items:center; gap:6px; transition:all .2s;
+}
+.recent-item:hover { background:var(--bg-hover); color:var(--text-primary); }
+
+/* ═══ MAIN CONTENT ═══ */
+.main-content {
+  flex:1; display:flex; flex-direction:column; position:relative; z-index:2; overflow:hidden;
+}
+
+/* Top Bar */
+.top-bar {
+  height:48px; border-bottom:1px solid var(--border-color); display:flex; align-items:center;
+  padding:0 16px; background:var(--bg-secondary); gap:12px;
+}
+.top-bar .title { font-family:var(--font-display); font-size:10px; letter-spacing:1px; color:var(--gold-primary); text-transform:uppercase; }
+.top-bar .separator { width:1px; height:20px; background:var(--border-color); }
+.top-bar .status { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); font-family:var(--font-ui); }
+.top-bar .status .active-dot { width:6px; height:6px; border-radius:50%; background:var(--success); box-shadow:0 0 4px var(--success); }
+.top-bar .right { margin-left:auto; display:flex; align-items:center; gap:12px; }
+.top-bar .agent-badge {
+  padding:4px 10px; border-radius:6px; border:1px solid var(--purple-primary);
+  background:var(--purple-glow); font-family:var(--font-display); font-size:8px;
+  letter-spacing:1px; color:var(--purple-light); text-transform:uppercase;
+}
+.top-bar .time-display { font-family:var(--font-display); font-size:10px; color:var(--text-muted); letter-spacing:1px; }
+
+/* Content Area */
+.content-area { flex:1; display:flex; overflow:hidden; }
+
+/* Chat Panel */
+.chat-panel {
+  flex:1; display:flex; flex-direction:column; max-width:600px; border-right:1px solid var(--border-color);
+}
+.chat-messages { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; }
+.msg { display:flex; gap:10px; max-width:85%; }
+.msg.user { align-self:flex-end; }
+.msg-avatar {
+  width:32px; height:32px; border-radius:50%; flex-shrink:0; display:flex;
+  align-items:center; justify-content:center; font-size:14px;
+}
+.msg.avatar-agent { background:var(--purple-glow); border:1px solid var(--purple-primary); }
+.msg.avatar-user { background:var(--gold-glow); border:1px solid var(--gold-dark); }
+.msg-bubble { padding:10px 14px; border-radius:10px; font-size:13px; line-height:1.5; }
+.msg.bubble-agent { background:var(--bg-card); border:1px solid var(--border-color); border-top-left-radius:2px; }
+.msg.bubble-user { background:rgba(255,215,0,0.1); border:1px solid var(--border-gold); border-top-right-radius:2px; }
+
+.chat-input {
+  padding:12px 16px; border-top:1px solid var(--border-color);
+  display:flex; gap:8px; align-items:center; background:var(--bg-secondary);
+}
+.chat-input input {
+  flex:1; background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px;
+  padding:10px 14px; color:var(--text-primary); font-size:13px; outline:none;
+}
+.chat-input input:focus { border-color:var(--gold-dark); box-shadow:0 0 8px var(--gold-glow); }
+.chat-input input::placeholder { color:var(--text-muted); }
+.send-btn {
+  width:36px; height:36px; border-radius:8px; border:none; background:var(--gold-dark);
+  color:#000; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  font-size:16px; transition:all .2s;
+}
+.send-btn:hover { background:var(--gold-primary); box-shadow:0 0 12px var(--gold-glow); }
+.voice-btn {
+  width:36px; height:36px; border-radius:50%; border:1px solid var(--purple-primary);
+  background:var(--purple-glow); color:var(--purple-light); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size:14px;
+}
+
+/* Right Panels */
+.right-panels {
+  flex:1; display:flex; flex-direction:column; overflow-y:auto; padding:12px; gap:12px;
+  background:var(--bg-secondary);
+}
+.panel-card {
+  background:var(--bg-panel); border:1px solid var(--border-color); border-radius:12px; overflow:hidden;
+}
+.panel-header {
+  padding:10px 14px; border-bottom:1px solid var(--border-color);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.panel-header h3 { font-family:var(--font-display); font-size:9px; letter-spacing:1.5px; color:var(--gold-primary); text-transform:uppercase; display:flex; align-items:center; gap:6px; }
+.panel-action { font-size:16px; cursor:pointer; color:var(--text-muted); }
+
+.venture-cards { display:grid; grid-template-columns:1fr; gap:8px; padding:12px; }
+.venture-card-mini {
+  padding:12px; border-radius:8px; border:1px solid var(--border-color); background:var(--bg-card);
+  display:flex; align-items:center; gap:10px; cursor:pointer; transition:all .2s;
+}
+.venture-card-mini:hover { border-color:var(--gold-dark); transform:translateY(-1px); }
+.venture-card-mini .v-icon { font-size:24px; }
+.venture-card-mini .v-info { flex:1; }
+.venture-card-mini .v-name { font-family:var(--font-ui); font-size:14px; font-weight:600; }
+.venture-card-mini .v-status { font-size:10px; color:var(--text-muted); }
+.venture-card-mini .v-progress { height:3px; background:var(--border-color); border-radius:2px; margin-top:6px; }
+.venture-card-mini .v-progress-fill { height:100%; border-radius:2px; background:linear-gradient(90deg, var(--gold-dark), var(--gold-primary)); }
+
+/* Tasks */
+.task-list { padding:8px 12px; }
+.task-item { display:flex; align-items:center; gap:8px; padding:6px 0; font-size:12px; }
+.task-check { width:14px; height:14px; border-radius:4px; border:1px solid var(--text-muted); display:flex; align-items:center; justify-content:center; font-size:10px; flex-shrink:0; }
+.task-check.done { background:var(--success); border-color:var(--success); color:#000; }
+.task-name { color:var(--text-secondary); }
+.task-name.done { text-decoration:line-through; color:var(--text-muted); }
+.task-badge { padding:1px 6px; border-radius:4px; font-size:9px; font-weight:600; margin-left:auto; }
+.task-badge.dentrepreneur { background:rgba(16,185,129,0.2); color:var(--success); }
+.task-badge.trading { background:rgba(59,130,246,0.2); color:var(--vibranium); }
+.task-badge.robin { background:rgba(245,158,11,0.2); color:var(--warning); }
+
+/* Quick Tools */
+.quick-tools { display:grid; grid-template-columns:repeat(2,1fr); gap:6px; padding:8px 12px; }
+.tool-btn {
+  padding:10px; border-radius:8px; border:1px solid var(--border-color); background:var(--bg-card);
+  text-align:center; cursor:pointer; transition:all .2s;
+}
+.tool-btn:hover { border-color:var(--purple-primary); background:var(--purple-glow); }
+.tool-btn .t-icon { font-size:20px; margin-bottom:4px; }
+.tool-btn .t-name { font-size:10px; color:var(--text-secondary); font-family:var(--font-ui); }
+
+/* Wakandan decorative elements */
+.wakanda-border { position:relative; }
+.wakanda-border::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, transparent, var(--gold-primary), var(--purple-primary), transparent);
+}
+.wakanda-border::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent, var(--purple-primary), var(--gold-primary), transparent);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border-color); border-radius:2px; }
+::-webkit-scrollbar-thumb:hover { background:var(--gold-dark); }
+
+/* Mobile responsive */
+@media (max-width:1200px) {
+  .sub-sidebar { width:180px; }
+  .right-panels { display:none; }
+}
+@media (max-width:768px) {
+  .main-sidebar { width:44px; }
+  .sub-sidebar { width:52px; }
+  .sub-sidebar .workspace-item .name,
+  .sub-sidebar .recent-item,
+  .sub-sidebar .recent-title,
+  .sub-sidebar-header h2 { display:none; }
+  .sub-sidebar .workspace-item { justify-content:center; padding:8px; }
+  .sub-sidebar .workspace-item .meta { display:none; }
+  .sidebar-btn .label { display:none; }
+}
+
+/* Floating action button */
+.fab {
+  position:fixed; bottom:20px; right:20px; width:48px; height:48px; border-radius:50%;
+  background:linear-gradient(135deg, var(--gold-dark), var(--gold-primary));
+  border:none; cursor:pointer; font-size:20px; color:#000; z-index:50;
+  box-shadow:0 0 20px var(--gold-glow); display:flex; align-items:center; justify-content:center;
+}
+
+/* Vibranium energy wave animation */
+.energy-line {
+  position:absolute; bottom:0; left:0; right:0; height:1px; overflow:hidden;
+}
+.energy-line::after {
+  content:''; display:block; width:30%; height:100%;
+  background:linear-gradient(90deg, transparent, var(--vibranium), transparent);
+  animation:energyFlow 3s linear infinite;
+}
+@keyframes energyFlow { 0% { transform:translateX(-100%); } 100% { transform:translateX(400%); } }
+</style>
+</head>
+<body>
+
+<!-- Main Sidebar -->
+<nav class="main-sidebar">
+  <div class="logo">👑</div>
+  <div class="sidebar-icons">
+    <button class="sidebar-btn active" onclick="switchPanel('empire')">🏛<span class="label">Empire</span></button>
+    <button class="sidebar-btn" onclick="switchPanel('dentrepreneur')">🦷<span class="label">Dentrepreneur</span></button>
+    <button class="sidebar-btn" onclick="switchPanel('trading')">📈<span class="label">Trading</span></button>
+    <button class="sidebar-btn" onclick="switchPanel('robin')">🤖<span class="label">Robin</span></button>
+    <button class="sidebar-btn" onclick="switchPanel('workspace')">📂<span class="label">Workspace</span></button>
+    <button class="sidebar-btn" onclick="switchPanel('control')">⚙<span class="label">Control</span></button>
+  </div>
+  <div style="padding:8px;">
+    <button class="sidebar-btn">⚡<span class="label">Settings</span></button>
+  </div>
+</nav>
+
+<!-- Sub Sidebar -->
+<aside class="sub-sidebar">
+  <div class="sub-sidebar-header">
+    <div class="vibranium-dot"></div>
+    <h2>Von Empire OS</h2>
+  </div>
+  <div class="workspace-list">
+    <div style="font-family:var(--font-display);font-size:8px;letter-spacing:1.5px;color:var(--purple-light);padding:8px 12px;text-transform:uppercase;margin-bottom:4px;">Ventures</div>
+    <div class="workspace-item active">
+      <span class="icon">🦷</span>
+      <span class="name">Dr. Dentrepreneur</span>
+      <span class="meta">5%</span>
+      <div class="status-dot"></div>
+    </div>
+    <div class="workspace-item">
+      <span class="icon">📈</span>
+      <span class="name">Trading Wiz</span>
+      <span class="meta">25%</span>
+    </div>
+    <div class="workspace-item">
+      <span class="icon">🤖</span>
+      <span class="name">Robin Autopilot</span>
+      <span class="meta">5%</span>
+    </div>
+
+    <div class="glow-line" style="margin:8px 12px;"></div>
+    <div class="recent-title">Recent Activity</div>
+    <div class="recent-item">📄 Empire Dashboard created</div>
+    <div class="recent-item">🎓 Study app live</div>
+    <div class="recent-item">📋 Launch plan pushed</div>
+    <div class="recent-item">🐙 GitHub repo setup</div>
+  </div>
+  <div class="energy-line"></div>
+</aside>
+
+<!-- Main Content -->
+<div class="main-content">
+  <!-- Top Bar -->
+  <header class="top-bar wakanda-border">
+    <span class="title">Von Empire OS</span>
+    <span class="separator"></span>
+    <span class="status"><span class="active-dot"></span> Velma Online</span>
+    <span class="right">
+      <span class="agent-badge">🤖 Velma Agent</span>
+      <span class="separator"></span>
+      <span class="time-display" id="clock">00:00:00</span>
+    </span>
+  </header>
+
+  <!-- Content Area -->
+  <div class="content-area">
+    <!-- Chat Panel -->
+    <div class="chat-panel">
+      <div class="chat-messages" id="chat">
+        <div class="msg">
+          <div class="msg-avatar msg-avatar-agent">🤖</div>
+          <div class="msg-bubble msg-bubble-agent">
+            <strong style="color:var(--purple-light)">Velma here.</strong> Von Empire OS is online. Wakanda-themed command center is live.<br><br>Three ventures tracked. All outputs saved and previewable. What are we building today, Your Highness? 👑
+          </div>
+        </div>
+        <div class="msg user">
+          <div class="msg-bubble msg-bubble-user">
+            Let's start Phase 1 of Dr. Dentrepreneur tomorrow. For now just get me the brand kit and first post drafts.
+          </div>
+          <div class="msg-avatar msg-avatar-user">👑</div>
+        </div>
+        <div class="msg">
+          <div class="msg-avatar msg-avatar-agent">🤖</div>
+          <div class="msg-bubble msg-bubble-agent">
+            On it. Queuing up:
+            <ul style="margin-top:6px;padding-left:16px">
+              <li>Brand kit (colors, fonts, voice guide)</li>
+              <li>First 5 post drafts</li>
+              <li>Landing page structure</li>
+              <li>Email sequence outline</li>
+            </ul>
+            Will have everything ready for tomorrow.
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input">
+        <input type="text" placeholder="Command Velma... (build, research, create, deploy)" id="msgInput" onkeypress="if(event.key==='Enter')sendMessage()">
+        <button class="voice-btn" title="Voice Command">🎙</button>
+        <button class="send-btn" onclick="sendMessage()" title="Send">▸</button>
+      </div>
+    </div>
+
+    <!-- Right Panels -->
+    <div class="right-panels">
+      <!-- Venture Status -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <h3><div class="vibranium-dot"></div> Venture Status</h3>
+          <span class="panel-action">⋮</span>
+        </div>
+        <div class="venture-cards">
+          <div class="venture-card-mini">
+            <div class="v-icon">🦷</div>
+            <div class="v-info">
+              <div class="v-name">Dr. Dentrepreneur</div>
+              <div class="v-status" style="color:var(--gold-primary)">PRIMARY • Phase 1 Setup</div>
+              <div class="v-progress"><div class="v-progress-fill" style="width:5%"></div></div>
+            </div>
+          </div>
+          <div class="venture-card-mini">
+            <div class="v-icon">📈</div>
+            <div class="v-info">
+              <div class="v-name">Trading Wiz</div>
+              <div class="v-status" style="color:var(--vibranium)">LEARNING • Level 3 Prep</div>
+              <div class="v-progress"><div class="v-progress-fill" style="width:25%;background:linear-gradient(90deg,var(--vibranium),#81D4FA)"></div></div>
+            </div>
+          </div>
+          <div class="venture-card-mini">
+            <div class="v-icon">🤖</div>
+            <div class="v-info">
+              <div class="v-name">Robin Autopilot</div>
+              <div class="v-status" style="color:var(--warning)">RESEARCH • Pre-launch</div>
+              <div class="v-progress"><div class="v-progress-fill" style="width:5%;background:linear-gradient(90deg, var(--warning),#FFD54F)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Tasks -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <h3>⚡ Active Tasks</h3>
+          <span class="panel-action">+</span>
+        </div>
+        <div class="task-list">
+          <div class="task-item"><div class="task-check">✓</div><span class="task-name done">Brand plan framework</span><span class="task-badge dentrepreneur">D</span></div>
+          <div class="task-item"><div class="task-check">✓</div><span class="task-name done">Options study app</span><span class="task-badge trading">T</span></div>
+          <div class="task-item"><div class="task-check">✓</div><span class="task-name done">Launch plan document</span><span class="task-badge dentrepreneur">D</span></div>
+          <div class="task-item"><div class="task-check">✓</div><span class="task-name done">Empire Dashboard</span><span class="task-badge dentrepreneur">O</span></div>
+          <div class="task-item"><div class="task-check done">✓</div><span class="task-name">Brand kit creation</span><span class="task-badge dentrepreneur">D</span></div>
+          <div class="task-item"><div class="task-check"></div><span class="task-name">First 5 post drafts</span><span class="task-badge dentrepreneur">D</span></div>
+          <div class="task-item"><div class="task-check"></div><span class="task-name">Landing page build</span><span class="task-badge dentrepreneur">D</span></div>
+          <div class="task-item"><div class="task-check"></div><span class="task-name">Level 3 exam prep</span><span class="task-badge trading">T</span></div>
+          <div class="task-item"><div class="task-check"></div><span class="task-name">Robin franchise research</span><span class="task-badge robin">R</span></div>
+        </div>
+      </div>
+
+      <!-- Quick Tools -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <h3>🔧 Quick Tools</h3>
+        </div>
+        <div class="quick-tools">
+          <div class="tool-btn"><div class="t-icon">🎨</div><div class="t-name">Image Gen</div></div>
+          <div class="tool-btn"><div class="t-icon">🔍</div><div class="t-name">X Search</div></div>
+          <div class="tool-btn"><div class="t-icon">📝</div><div class="t-name">Content</div></div>
+          <div class="tool-btn"><div class="t-icon">📊</div><div class="t-name">Analytics</div></div>
+          <div class="tool-btn"><div class="t-icon">🌐</div><div class="t-name">Web Browse</div></div>
+          <div class="tool-btn"><div class="t-icon">📁</div><div class="t-name">File Mgr</div></div>
+          <div class="tool-btn"><div class="t-icon">🧠</div><div class="t-name">Memory</div></div>
+          <div class="tool-btn"><div class="t-icon">⏰</div><div class="t-name">Cron Jobs</div></div>
+        </div>
+      </div>
+
+      <!-- Revenue Tracker -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <h3>💰 Revenue Path</h3>
+          <span class="panel-action" style="font-size:12px;color:var(--gold-primary);">$38K goal</span>
+        </div>
+        <div style="padding:10px 14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-size:10px;color:var(--text-muted)">Current</span>
+            <span style="font-family:var(--font-display);font-size:12px;color:var(--gold-primary);">$0 / $38,000</span>
+          </div>
+          <div style="height:6px;background:var(--border-color);border-radius:3px;overflow:hidden;margin-bottom:8px;">
+            <div style="height:100%;width:0%;background:linear-gradient(90deg,var(--gold-dark),var(--gold-primary));border-radius:3px;"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;text-align:center;">
+            <div><div style="font-size:8px;color:var(--text-muted)">Mo 3</div><div style="font-size:9px;color:var(--success);font-weight:600">$5K</div></div>
+            <div><div style="font-size:8px;color:var(--text-muted)">Mo 6</div><div style="font-size:9px;color:var(--vibranium);font-weight:600">$10K</div></div>
+            <div><div style="font-size:8px;color:var(--text-muted)">Mo 9</div><div style="font-size:9px;color:var(--purple-light);font-weight:600">$20K</div></div>
+            <div><div style="font-size:8px;color:var(--text-muted)">Mo 12</div><div style="font-size:9px;color:var(--gold-primary);font-weight:600">$38K</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:8px;">
+        <span style="font-size:9px;color:var(--text-muted);font-family:var(--font-display);letter-spacing:1px;">WAKANDA FOREVER • BUILT BY VON & VELMA</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Action Button -->
+<button class="fab" title="New Task" onclick="document.getElementById('msgInput').focus()">＋</button>
+
+<script>
+// Clock
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2, '0');
+  const m = now.getMinutes().toString().padStart(2, '0');
+  const s = now.getSeconds().toString().padStart(2, '0');
+  document.getElementById('clock').textContent = `${h}:${m}:${s} EST`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// Send message
+function sendMessage() {
+  const input = document.getElementById('msgInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const chat = document.getElementById('chat');
+  chat.innerHTML += `<div class="msg user">
+    <div class="msg-bubble msg-bubble-user">${text}</div>
+    <div class="msg-avatar msg-avatar-user">👑</div>
+  </div>`;
+  input.value = '';
+
+  setTimeout(() => {
+    chat.innerHTML += `<div class="msg">
+      <div class="msg-avatar msg-avatar-agent">🤖</div>
+      <div class="msg-bubble msg-bubble-agent">
+        Command received. Processing: "${text}"<br><br><em style="color:var(--purple-light);font-size:11px;">Velma is working on this...</em>
+      </div>
+    </div>`;
+    chat.scrollTop = chat.scrollHeight;
+  }, 800);
+
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// Panel switching
+function switchPanel(panel) {
+  document.querySelectorAll('.sidebar-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', btn.getAttribute('onclick').includes(panel));
+  });
+}
+
+// Sidebar item selection
+document.querySelectorAll('.workspace-item').forEach(item => {
+  item.addEventListener('click', function() {
+    document.querySelectorAll('.workspace-item').forEach(i => i.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
