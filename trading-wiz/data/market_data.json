@@ -1,0 +1,103 @@
+{
+  "last_updated": "2026-05-28 17:03:57 UTC",
+  "source": "yfinance",
+  "market_status": "fetching...",
+  "tickers": [
+    {
+      "ticker": "AAPL",
+      "price": 311.07,
+      "change": 0.47,
+      "pct_change": 0.15,
+      "day_high": 312.76,
+      "day_low": 309.57,
+      "volume": 17207997,
+      "market_cap": 4568795938493.408,
+      "sector": "Consumer Tech",
+      "updated": "2026-05-28 17:03 UTC"
+    },
+    {
+      "ticker": "NVDA",
+      "price": 213.65,
+      "change": 1.91,
+      "pct_change": 0.9,
+      "day_high": 214.29,
+      "day_low": 211.22,
+      "volume": 69141565,
+      "market_cap": 5174937725433.35,
+      "sector": "Semiconductors",
+      "updated": "2026-05-28 17:03 UTC"
+    },
+    {
+      "ticker": "MSFT",
+      "price": 424.96,
+      "change": 10.38,
+      "pct_change": 2.5,
+      "day_high": 429.49,
+      "day_low": 412.67,
+      "volume": 23725810,
+      "market_cap": 3156787548336.446,
+      "sector": "Software",
+      "updated": "2026-05-28 17:03 UTC"
+    },
+    {
+      "ticker": "AMZN",
+      "price": 270.38,
+      "change": -1.93,
+      "pct_change": -0.71,
+      "day_high": 272.32,
+      "day_low": 267.44,
+      "volume": 18093058,
+      "market_cap": 2908507301830.6284,
+      "sector": "E-Commerce",
+      "updated": "2026-05-28 17:03 UTC"
+    },
+    {
+      "ticker": "GOOGL",
+      "price": 389.13,
+      "change": 0.34,
+      "pct_change": 0.09,
+      "day_high": 391.5,
+      "day_low": 385.16,
+      "volume": 8949220,
+      "market_cap": 4714482842803.462,
+      "sector": "Internet",
+      "updated": "2026-05-28 17:03 UTC"
+    },
+    {
+      "ticker": "TSLA",
+      "price": 441.92,
+      "change": 3.79,
+      "pct_change": 0.86,
+      "day_high": 443.14,
+      "day_low": 436.3,
+      "volume": 20354670,
+      "market_cap": 1659710746545.332,
+      "sector": "EV/Auto",
+      "updated": "2026-05-28 17:03 UTC"
+    },
+    {
+      "ticker": "META",
+      "price": 630.82,
+      "change": 0.89,
+      "pct_change": 0.14,
+      "day_high": 643.0,
+      "day_low": 629.31,
+      "volume": 9686088,
+      "market_cap": 1601288207221.2476,
+      "sector": "Social Media",
+      "updated": "2026-05-28 17:03 UTC"
+    },
+    {
+      "ticker": "EYPT",
+      "price": 13.94,
+      "change": 0.77,
+      "pct_change": 5.85,
+      "day_high": 14.02,
+      "day_low": 13.01,
+      "volume": 623899,
+      "market_cap": 1168747658.9387913,
+      "sector": "Biotech",
+      "updated": "2026-05-28 17:03 UTC"
+    }
+  ]
+}
