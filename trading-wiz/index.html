@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Von Empire — Trading Wiz Platform</title>
+<style>
+:root{--bg:#030307;--bg2:#0a0a14;--card:#0e0e1a;--card-hover:#141425;--border:#1a1a2e;--text:#e2e8f0;--text2:#94a3b8;--muted:#64748b;--gold:#FFD700;--green:#00c076;--red:#ef4444;--blue:#3b82f6;--purple:#7B2D8E;--purple-glow:rgba(123,45,142,0.3);--accent:#6366f1;--orange:#f59e0b;--radius:12px;--radius-sm:8px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* SIDEBAR */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--bg2);border-right:1px solid var(--border);padding:16px 12px;z-index:50;display:flex;flex-direction:column;gap:4px}
+.sidebar .logo{padding:8px 12px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.sidebar .logo span:first-child{font-size:20px}
+.sidebar .logo span:last-child{font-size:14px;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-group{margin-bottom:8px}
+.nav-group-title{font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:1.5px;padding:8px 12px 4px;font-weight:700}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s;border:1px solid transparent}
+.nav-item:hover{background:var(--card);color:var(--text)}
+.nav-item.active{background:rgba(99,102,241,0.1);color:var(--accent);border-color:rgba(99,102,241,0.3)}
+.nav-item .icon{font-size:15px;width:20px;text-align:center}
+.nav-item .badge{font-size:9px;background:var(--accent);color:#fff;padding:1px 5px;border-radius:99px;margin-left:auto}
+
+/* MAIN */
+.main{margin-left:220px;padding:20px 24px;min-height:100vh}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.page-header h1{font-size:22px;font-weight:800;letter-spacing:-0.5px}
+.page-header h1 .emoji{margin-right:6px}
+.live-indicator{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green)}
+.live-indicator .dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.card-title{font-size:14px;font-weight:700}
+.card-subtitle{font-size:11px;color:var(--muted)}
+
+/* METRIC ROWS */
+.metrics-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px}
+.metric-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;position:relative;overflow:hidden}
+.metric-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.metric-card.gold::before{background:linear-gradient(90deg,var(--gold),transparent)}
+.metric-card.green::before{background:linear-gradient(90deg,var(--green),transparent)}
+.metric-card.blue::before{background:linear-gradient(90deg,var(--blue),transparent)}
+.metric-card.purple::before{background:linear-gradient(90deg,var(--purple),transparent)}
+.metric-card.red::before{background:linear-gradient(90deg,var(--red),transparent)}
+.metric-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.metric-value{font-size:20px;font-weight:800;letter-spacing:-0.5px}
+.metric-change{font-size:11px;margin-top:4px;display:flex;align-items:center;gap:3px}
+.metric-change.up{color:var(--green)}.metric-change.down{color:var(--red)}
+
+/* TABLE */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:10px 12px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+tr:hover td{background:rgba(255,255,255,0.02)}
+.ticker{font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px}
+.ticker .dot{width:8px;height:8px;border-radius:50%}
+.price{font-weight:700;font-family:'SF Mono',monospace;font-size:13px}
+.pct.positive{color:var(--green)}.pct.negative{color:var(--red)}
+.tag{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600}
+.tag.leaps{background:rgba(99,102,241,0.15);color:var(--accent)}
+.tag.income{background:rgba(0,192,118,0.15);color:var(--green)}
+.tag.paper{background:rgba(245,158,11,0.15);color:var(--orange)}
+.tag.hold{background:rgba(59,130,246,0.15);color:var(--blue)}
+
+/* FILTERS */
+.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-bar input,.filter-bar select{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-size:12px;outline:none}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--accent)}
+.filter-bar input{width:140px}
+.filter-bar select{cursor:pointer}
+.filter-btn{background:var(--accent);color:#fff;border:0;padding:8px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s}
+.filter-btn:hover{opacity:.85}
+
+/* MINI CHART */
+.mini-chart{width:80px;height:30px;display:inline-block;vertical-align:middle}
+.mini-chart svg{width:100%;height:100%}
+
+/* STATUS DOT */
+.status-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.status-dot.green{background:var(--green)}
+.status-dot.yellow{background:var(--orange)}
+.status-dot.red{background:var(--red)}
+
+/* P&L BAR */
+.pnl-bar{display:flex;align-items:center;gap:4px}
+.pnl-fill{height:5px;border-radius:3px;min-width:4px}
+
+/* PAGE SECTIONS */
+.page{display:none}.page.active{display:block}
+
+/* ALERTS */
+.alert-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.alert-item:last-child{border-bottom:0}
+.alert-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.alert-icon.price{background:rgba(59,130,246,0.15)}.alert-icon.iv{background:rgba(123,45,142,0.15)}
+.alert-icon.dte{background:rgba(245,158,11,0.15)}.alert-icon.pnl{background:rgba(0,192,118,0.15)}
+.alert-text{font-size:13px}
+.alert-text .time{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* TOGGLE */
+.toggle-label{font-size:12px;color:var(--text2)}
+.toggle{position:relative;width:36px;height:20px;background:var(--border);border-radius:10px;cursor:pointer;transition:background .2s}
+.toggle.on{background:var(--accent)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s}
+.toggle.on::after{transform:translateX(16px)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{width:56px;overflow:hidden}.sidebar .logo span:last-child,.nav-group-title,.nav-item span{display:none}
+  .nav-item{justify-content:center;padding:10px}.main{margin-left:56px;padding:14px}
+  .metrics-row{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo"><span>👑</span><span>VON EMPIRE</span></div>
+  <div class="nav-group">
+    <div class="nav-group-title">Trading</div>
+    <div class="nav-item active" onclick="showPage('dashboard')" data-page="dashboard">
+      <span class="icon">📊</span><span>Dashboard</span>
+    </div>
+    <div class="nav-item" onclick="showPage('watchlist')" data-page="watchlist">
+      <span class="icon">👁</span><span>Watchlist</span><span class="badge">5</span>
+    </div>
+    <div class="nav-item" onclick="showPage('leaps')" data-page="leaps">
+      <span class="icon">🎯</span><span>LEAPS Screener</span>
+    </div>
+    <div class="nav-item" onclick="showPage('portfolio')" data-page="portfolio">
+      <span class="icon">💼</span><span>Portfolio</span>
+    </div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-title">Analysis</div>
+    <div class="nav-item" onclick="showPage('options')" data-page="options">
+      <span class="icon">📈</span><span>Options Chain</span>
+    </div>
+    <div class="nav-item" onclick="showPage('alerts')" data-page="alerts">
+      <span class="icon">🔔</span><span>Alerts</span><span class="badge">3</span>
+    </div>
+    <div class="nav-item" onclick="showPage('journal')" data-page="journal">
+      <span class="icon">📓</span><span>Trade Journal</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- DASHBOARD PAGE -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-header">
+      <h1><span class="emoji">📊</span>Trading Dashboard</h1>
+      <div class="live-indicator"><div class="dot"></div><span id="clock">--:-- --</span> EST</div>
+    </div>
+    <div class="metrics-row">
+      <div class="metric-card gold">
+        <div class="metric-label">Account Value</div>
+        <div class="metric-value">$25,000</div>
+        <div class="metric-change up" style="color:var(--muted)">Paper Trading</div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">Today's P&L</div>
+        <div class="metric-value" id="today-pnl">$0.00</div>
+        <div class="metric-change up">0.0%</div>
+      </div>
+      <div class="metric-card blue">
+        <div class="metric-label">Open Positions</div>
+        <div class="metric-value" id="open-positions">0</div>
+        <div class="metric-change" style="color:var(--muted)">0 LEAPS, 0 Income</div>
+      </div>
+      <div class="metric-card purple">
+        <div class="metric-label">Level 3 Status</div>
+        <div class="metric-value" style="font-size:16px">📚 In Prep</div>
+        <div class="metric-change" style="color:var(--muted)">Study app: 90%+</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔥 Watchlist</div><div class="card-subtitle">Top moves today</div></div>
+        <div id="watchlist-mini"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📋 Upcoming Events</div><div class="card-subtitle">Earnings & dates</div></div>
+        <div id="events-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WATCHLIST PAGE -->
+  <div class="page" id="page-watchlist">
+    <div class="page-header">
+      <h1><span class="emoji">👁</span>Watchlist</h1>
+      <div class="live-indicator"><div class="dot"></div><span id="clock2">--:-- --</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Tracked Tickers</div></div>
+      <div class="table-wrap"><table id="watchlist-table">
+        <thead><tr><th>Ticker</th><th>Price</th><th>Change</th><th>% Chg</th><th>Volume</th><th>IV</th><th>Delta</th><th>Signal</th></tr></thead>
+        <tbody id="watchlist-body"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- LEAPS SCREENER PAGE -->
+  <div class="page" id="page-leaps">
+    <div class="page-header">
+      <h1><span class="emoji">🎯</span>LEAPS Screener</h1>
+    </div>
+    <div class="filter-bar">
+      <input type="text" id="leaps-ticker" placeholder="Ticker (e.g. AAPL)">
+      <select id="leaps-dte"><option value="">Min DTE</option><option value="180">180+</option><option value="365" selected>365+</option><option value="540">540+</option></select>
+      <select id="leaps-delta"><option value="">Min Delta</option><option value="0.70">0.70+</option><option value="0.80" selected>0.80+</option><option value="0.90">0.90+</option></select>
+      <select id="leaps-iv"><option value="">Max IV Rank</option><option value="30">30%</option><option value="50" selected>50%</option><option value="70">70%</option></select>
+      <button class="filter-btn" onclick="runScan()">🔍 Scan</button>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Results</div><div class="card-subtitle" id="leaps-count">Enter ticker and scan</div></div>
+      <div class="table-wrap"><table><thead><tr><th>Contract</th><th>Price</th><th>Strike</th><th>Exp</th><th>DTE</th><th>Delta</th><th>IV</th><th>Volume</th><th>OI</th><th>Action</th></tr></thead><tbody id="leaps-body"></tbody></table></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="card-title" style="margin-bottom:8px">💡 LEAPS Selection Criteria</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.8">
+        • Delta ≥ 0.80 (mimics stock movement)<br>
+        • DTE 12-24 months (long enough for thesis to play out)<br>
+        • IV Rank < 50% (avoid expensive premiums)<br>
+        • Open Interest > 100 (liquidity)<br>
+        • Underlying: strong fundamental thesis (not memes)
+      </div>
+    </div>
+  </div>
+
+  <!-- PORTFOLIO PAGE -->
+  <div class="page" id="page-portfolio">
+    <div class="page-header">
+      <h1><span class="emoji">💼</span>Portfolio</h1>
+    </div>
+    <div class="metrics-row">
+      <div class="metric-card gold">
+        <div class="metric-label">Portfolio Value</div>
+        <div class="metric-value">$25,000</div>
+        <div class="metric-change" style="color:var(--muted)">Paper account</div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">Total P&L</div>
+        <div class="metric-value" id="total-pnl">$0.00</div>
+        <div class="metric-change up">0.0%</div>
+      </div>
+      <div class="metric-card blue">
+        <div class="metric-label">Capital Deployed</div>
+        <div class="metric-value">$0</div>
+        <div class="metric-change" style="color:var(--muted)">0% utilized</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Open Positions</div></div>
+      <div class="table-wrap"><table><thead><tr><th>Ticker</th><th>Type</th><th>Strike</th><th>Exp</th><th>Entry</th><th>Current</th><th>P&L</th><th>%</th><th>Status</th></tr></thead><tbody id="portfolio-body"><tr><td colspan="9" style="text-align:center;color:var(--muted);padding:30px">No open positions yet. Start paper trading after Level 3 approval! 📚</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- OPTIONS CHAIN PAGE -->
+  <div class="page" id="page-options">
+    <div class="page-header">
+      <h1><span class="emoji">📈</span>Options Chain Viewer</h1>
+    </div>
+    <div class="filter-bar">
+      <input type="text" id="opt-ticker" placeholder="Ticker" style="width:100px">
+      <input type="date" id="opt-expiry" style="width:150px">
+      <button class="filter-btn" onclick="loadChain()">Load Chain</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="card"><div class="card-title" style="margin-bottom:10px;text-align:center;color:var(--green)">Calls</div><div class="table-wrap"><table id="calls-table"><thead><tr><th>Strike</th><th>Bid</th><th>Ask</th><th>Δ</th><th>Volume</th><th>OI</th></tr></thead><tbody id="calls-body"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">Enter ticker + expiry</td></tr></tbody></table></div></div>
+      <div class="card"><div class="card-title" style="margin-bottom:10px;text-align:center;color:var(--red)">Puts</div><div class="table-wrap"><table id="puts-table"><thead><tr><th>Strike</th><th>Bid</th><th>Ask</th><th>Δ</th><th>Volume</th><th>OI</th></tr></thead><tbody id="puts-body"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">Enter ticker + expiry</td></tr></tbody></table></div></div>
+    </div>
+  </div>
+
+  <!-- ALERTS PAGE -->
+  <div class="page" id="page-alerts">
+    <div class="page-header">
+      <h1><span class="emoji">🔔</span>Alerts</h1>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px">Active Alerts</div>
+      <div id="alerts-list"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="card-title" style="margin-bottom:12px">Create Alert</div>
+      <div class="filter-bar">
+        <input type="text" id="alert-ticker" placeholder="Ticker" style="width:80px">
+        <select id="alert-type" style="width:120px">
+          <option>Price Above</option><option>Price Below</option><option>IV Change</option><option>DTE Reminder</option>
+        </select>
+        <input type="text" id="alert-value" placeholder="Value (e.g. 175.00)" style="width:150px">
+        <button class="filter-btn" onclick="addAlert()">+ Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRADE JOURNAL PAGE -->
+  <div class="page" id="page-journal">
+    <div class="page-header">
+      <h1><span class="emoji">📓</span>Trade Journal</h1>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px">Trade Log</div>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>Date</th><th>Ticker</th><th>Type</th><th>Strike</th><th>Entry</th><th>Exit</th><th>P&L</th><th>Notes</th></tr></thead><tbody id="journal-body"><tr><td colspan="9" style="text-align:center;color:var(--muted);padding:30px">No trades logged yet — your journal starts with your first trade! 🎯</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// === CLOCK ===
+function updateClock(){const d=new Date();const opts={hour:'numeric',minute:'2-digit',second:'2-digit'};
+document.getElementById('clock').textContent=d.toLocaleTimeString('en-US',opts);
+document.getElementById('clock2').textContent=d.toLocaleTimeString('en-US',opts)}
+setInterval(updateClock,1000);updateClock();
+
+// === NAVIGATION ===
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById('page-'+id).classList.add('active');
+document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+document.querySelector(\`[data-page="\${id}"]\`).classList.add('active')}
+
+// === WATCHLIST DATA ===
+const watchlist=[
+  {ticker:'EYL',name:'EyePoint Pharmaceuticals',price:28.45,change:1.23,pct:4.52,vol:'1.2M',iv:62,delta:0.42,signal:'🔥 Hot',color:'#f59e0b'},
+  {ticker:'AAPL',name:'Apple Inc.',price:198.12,change:-0.87,pct:-0.44,vol:'52.3M',iv:24,delta:0.55,signal:'👁 Watch',color:'#3b82f6'},
+  {ticker:'NVDA',name:'NVIDIA Corp.',price:135.42,change:3.21,pct:2.43,vol:'98.7M',iv:45,delta:0.58,signal:'📈 Momentum',color:'#10b981'},
+  {ticker:'MSFT',name:'Microsoft Corp.',price:445.78,change:2.15,pct:0.48,vol:'18.1M',iv:22,delta:0.52,signal:'Steady',color:'#6366f1'},
+  {ticker:'AMZN',name:'Amazon.com Inc.',price:198.50,change:-1.45,pct:-0.72,vol:'38.4M',iv:28,delta:0.50,signal:'Consolidating',color:'#94a3b8'}
+];
+
+function renderWatchlist(){
+  const mini=document.getElementById('watchlist-mini');
+  const body=document.getElementById('watchlist-body');
+  mini.innerHTML=watchlist.map(w=>\`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">
+    <div><span style="font-weight:700;font-size:13px">\${w.ticker}</span><span style="font-size:11px;color:var(--muted);margin-left:6px">\${w.price}</span></div>
+    <span class="pct \${w.change>=0?'positive':'negative'}">\${w.change>=0?'+':''}\${w.pct}%</span></div>\`).join('');
+  body.innerHTML=watchlist.map(w=>\`<tr><td><div class="ticker"><span class="dot" style="background:\${w.color}"></span><div><span>\${w.ticker}</span><span style="font-size:10px;color:var(--muted);display:block">\${w.name}</span></div></div></td>
+    <td class="price">\$\${w.price.toFixed(2)}</td><td>\${w.change>=0?'+':''}\${w.change.toFixed(2)}</td>
+    <td class="pct \${w.pct>=0?'positive':'negative'}">\${w.pct>=0?'+':''}\${w.pct}%</td>
+    <td>\${w.vol}</td><td>\${w.iv}%</td><td>\${w.delta}</td>
+    <td><span style="font-size:12px">\${w.signal}</span></td></tr>\`).join('')}
+renderWatchlist();
+
+// === EVENTS ===
+const events=[
+  {date:'Jun 15',event:'EYL Q2 Earnings',tag:'earnings',color:'var(--gold)'},
+  {date:'Jun 20',event:'Fed Rate Decision',tag:'macro',color:'var(--red)'},
+  {date:'Jun 22',event:'Options Expiry (Monthly)',tag:'expiry',color:'var(--purple)'},
+  {date:'Jul 5',event:'Q3 begins — Review LEAPS thesis',tag:'review',color:'var(--blue)'}
+];
+document.getElementById('events-list').innerHTML=events.map(e=>
+  \`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+    <div style="width:40px;text-align:center"><span style="font-size:11px;color:var(--muted);font-weight:700">\${e.date}</span></div>
+    <div style="flex:1"><span style="font-size:13px">\${e.event}</span></div>
+    <span class="tag" style="background:\${e.color}22;color:\${e.color}">\${e.tag}</span></div>\`).join('');
+
+// === LEAPS SCREENER ===
+const sampleContracts=[
+  {strike:22.0,exp:'2027-06-18',dte:380,price:7.80,delta:0.85,iv:55,vol:45,oi:230},
+  {strike:25.0,exp:'2027-06-18',dte:380,price:5.60,delta:0.81,iv:52,vol:78,oi:410},
+  {strike:20.0,exp:'2027-12-15',dte:560,price:9.40,delta:0.88,iv:48,vol:22,oi:150},
+  {strike:24.0,exp:'2027-12-15',dte:560,price:6.60,delta:0.82,iv:50,vol:35,oi:280}
+];
+
+function runScan(){
+  const ticker=document.getElementById('leaps-ticker').value.toUpperCase();
+  const minDTE=parseInt(document.getElementById('leaps-dte').value)||0;
+  const minDelta=parseFloat(document.getElementById('leaps-delta').value)||0;
+  const maxIV=parseInt(document.getElementById('leaps-iv').value)||100;
+  const results=sampleContracts.filter(c=>c.dte>=minDTE&&c.delta>=minDelta&&c.iv<=maxIV);
+  document.getElementById('leaps-count').textContent=\`\${results.length} contracts found for \${ticker||'sample'}\`;
+  document.getElementById('leaps-body').innerHTML=results.length?results.map(c=>
+    \`<tr><td class="ticker">\${ticker||'EYL'}\${c.exp.replace('-','').slice(2)}C\${c.strike.toFixed(0)}</td>
+      <td class="price">\$\${c.price.toFixed(2)}</td><td>\$\${c.strike.toFixed(0)}</td><td>\${c.exp}</td>
+      <td>\${c.dte}</td><td>\${c.delta.toFixed(2)}</td><td>\${c.iv}%</td><td>\${c.vol}</td>
+      <td>\${c.oi}</td><td><button class="filter-btn" style="padding:4px 10px;font-size:11px" onclick="this.textContent=this.textContent==='📋 Add'?'✅ Added':'📋 Add'">📋 Add</button></td></tr>\`).join('')
+    :`<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:20px">No contracts match filters. Try widening your criteria.</td></tr>`}
+
+// === ALERTS ===
+let alerts=[
+  {type:'price',icon:'📊',text:'EYL crosses above $30.00',time:'Active'},
+  {type:'iv',icon:'📉',text:'EYL IV drops below 45%',time:'Active'},
+  {type:'dte',icon:'⏰',text:'30-day DTE reminder for any open LEAPS',time:'Active'}
+];
+function renderAlerts(){
+  document.getElementById('alerts-list').innerHTML=alerts.map(a=>
+    \`<div class="alert-item"><div class="alert-icon \${a.type}">\${a.icon}</div>
+      <div class="alert-text"><div>\${a.text}</div><div class="time">\${a.time}</div></div></div>\`).join('')}
+renderAlerts();
+function addAlert(){
+  const t=document.getElementById('alert-ticker').value.toUpperCase();
+  const tp=document.getElementById('alert-type').value;
+  const v=document.getElementById('alert-value').value;
+  if(!t||!v)return;
+  alerts.unshift({type:'price',icon:'🔔',text:\`\${t} \${tp} \${v}\`,time:'Just added'});
+  renderAlerts();document.getElementById('alert-ticker').value='';document.getElementById('alert-value').value=''}
+
+// === OPTIONS CHAIN ===
+function loadChain(){
+  const ticker=document.getElementById('opt-ticker').value.toUpperCase()||'EYL';
+  const spot=28.45;const strikes=[20,22,24,26,28,30,32,34,36,38,40];
+  const genRows=(side)=>strikes.map(s=>{
+    const m=s-spot;const delta=side==='call'?Math.max(0.01,0.6-m/15):Math.max(0.01,0.6+m/15);
+    const mid=side==='call'?Math.max(0.3,spot-s+2+Math.random()*2):Math.max(0.3,s-spot+1+Math.random()*2);
+    return \`<tr><td>\$\${s}</td><td>\$\${(mid-0.05).toFixed(2)}</td><td>\$\${(mid+0.05).toFixed(2)}</td><td>\${delta.toFixed(2)}</td><td>\${Math.floor(Math.random()*200)}</td><td>\${Math.floor(Math.random()*500)}</td></tr>\`}).join('');
+  document.getElementById('calls-body').innerHTML=genRows('call');
+  document.getElementById('puts-body').innerHTML=genRows('put')}
+</script>
+</body>
+</html>
