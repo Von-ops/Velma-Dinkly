@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Von Empire Command Center</title>
+<style>
+:root{--bg:#050508;--card:#0e0e16;--accent:#3b82f6;--accent2:#10b981;--warn:#f59e0b;--danger:#ef4444;--text:#e2e8f0;--muted:#64748b;--border:#1e1e2e;--purple:#8b5cf6;--pink:#ec4899}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:20px}
+.header{background:linear-gradient(135deg,#0c1222 0%,#0a0f1c 100%);padding:16px;text-align:center;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.header h1{font-size:18px;font-weight:800;letter-spacing:-0.5px;background:linear-gradient(to right,#3b82f6,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header .sub{font-size:11px;color:var(--muted);margin-top:2px}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px;max-width:600px;margin:0 auto}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 12px;text-align:center}
+.stat-card .icon{font-size:18px;margin-bottom:2px}
+.stat-card .num{font-size:16px;font-weight:800;color:var(--accent)}
+.stat-card .label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:1px}
+.section{padding:0 12px;max-width:600px;margin:0 auto}
+.venture-card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin:10px 0;overflow:hidden}
+.venture-header{padding:14px;cursor:pointer;display:flex;align-items:center;gap:10px}
+.venture-header .icon{font-size:24px;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.venture-header .info{flex:1}
+.venture-header .name{font-size:15px;font-weight:700}
+.venture-header .tag{font-size:10px;color:var(--muted);margin-top:2px}
+.venture-header .arrow{font-size:12px;color:var(--muted);transition:transform .2s}
+.venture-header.open .arrow{transform:rotate(90deg)}
+.venture-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border)}
+.venture-body.open{display:block}
+.progress-bar-wrap{height:6px;background:var(--border);border-radius:3px;margin:8px 0;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:3px;transition:width .5s ease}
+.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.kpi-item{background:rgba(30,30,50,0.5);border-radius:8px;padding:8px 10px}
+.kpi-item .label{font-size:10px;color:var(--muted)}
+.kpi-item .value{font-size:13px;font-weight:600;margin-top:2px}
+.kpi-item .value.green{color:var(--accent2)}
+.kpi-item .value.blue{color:var(--accent)}
+.kpi-item .value.amber{color:var(--warn)}
+.kpi-item .value.purple{color:var(--purple)}
+.day-items{margin-top:10px}
+.day-item{border-left:2px solid var(--accent);padding:6px 0 6px 10px;margin:6px 0}
+.day-item.completed{border-color:var(--accent2);opacity:.7}
+.day-item h4{font-size:12px;font-weight:600}
+.day-item p{font-size:10px;color:var(--muted);margin-top:2px}
+.next-action{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:10px;margin-top:10px;display:flex;align-items:center;gap:8px}
+.next-action .icon{font-size:16px}
+.next-action .text{font-size:12px;font-weight:600}
+.quick-links{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}
+.quick-link{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;text-decoration:none;color:var(--text);transition:border-color .2s}
+.quick-link:hover{border-color:var(--accent)}
+.quick-link .ql-icon{font-size:20px;margin-bottom:4px}
+.quick-link .ql-name{font-size:12px;font-weight:600}
+.quick-link .ql-desc{font-size:10px;color:var(--muted);margin-top:2px}
+.timeline{margin:10px 0}
+.timeline-item{position:relative;padding:8px 0 8px 20px;border-left:2px solid var(--border)}
+.timeline-item::before{content:'';position:absolute;left:-6px;top:12px;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.timeline-item.completed::before{background:var(--accent2)}
+.timeline-item .date{font-size:10px;color:var(--muted)}
+.timeline-item .event{font-size:12px;font-weight:600;margin-top:2px}
+.revenue-ramp{background:var(--card);border:1px solid var(--border);border-radius:14px;margin:12px 0;padding:14px}
+.revenue-ramp h3{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:flex-end;gap:6px}
+.ramp-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ramp-label{font-size:10px;color:var(--muted);width:60px;text-align:right}
+.ramp-bar{flex:1;height:20px;background:var(--border);border-radius:4px;overflow:hidden;position:relative}
+.ramp-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px}
+.ramp-amount{font-size:10px;font-weight:600;margin-left:4px;white-space:nowrap}
+.footer{text-align:center;color:#334155;font-size:10px;padding:16px;margin-top:8px}
+.tab-nav{display:flex;gap:8px;padding:0 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.tab-btn{padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.tab-btn.active{border-color:var(--accent);color:var(--text);background:rgba(59,130,246,0.1)}
+.status-badge{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600}
+.status-active{background:rgba(16,185,129,0.2);color:var(--accent2)}
+.status-planning{background:rgba(59,130,246,0.2);color:var(--accent)}
+.status-research{background:rgba(245,158,11,0.2);color:var(--warn)}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>👑 Von Empire Command Center</h1>
+<p class="sub">Built by Von & Velma (Hermes Agent) | Last updated: <span id="last-updated">May 28, 2026</span></p>
+</div>
+
+<div class="stats-row">
+<div class="stat-card"><div class="icon">🏢</div><div class="num">3</div><div class="label">Ventures</div></div>
+<div class="stat-card"><div class="icon">🎯</div><div class="num" id="total-progress">12%</div><div class="label">Overall Progress</div></div>
+<div class="stat-card"><div class="icon">💰</div><div class="num" id="total-revenue">$0</div><div class="label">Monthly Revenue</div></div>
+</div>
+
+<div class="tab-nav">
+<button class="tab-btn active" onclick="scrollToVenture('dentrepreneur')">🦷 Dr. Dentrepreneur</button>
+<button class="tab-btn" onclick="scrollToVenture('trading')">📈 Trading Wiz</button>
+<button class="tab-btn" onclick="scrollToVenture('robin')">🤖 Robin Autopilot</button>
+</div>
+
+<div class="section">
+
+<!-- DR. DENTREPRENEUR -->
+<div class="venture-card">
+<div class="venture-header" id="dentrepreneur" onclick="toggleVenture('dentrepreneur-body', this)">
+<div class="icon" style="background:linear-gradient(135deg,#059669,#10b981)">🦷</div>
+<div class="info">
+<div class="name">Dr. Dentrepreneur</div>
+<div class="tag">PRIMARY — Dental coaching & education brand</div>
+</div>
+<span class="status-badge status-active">Active</span>
+<span class="arrow">▶</span>
+</div>
+<div class="venture-body" id="dentrepreneur-body">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<span style="font-size:11px;color:var(--muted)">Phase 1: Foundation (Days 1-7)</span>
+<span style="font-size:11px;color:var(--accent);font-weight:600">5%</span>
+</div>
+<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:5%;background:linear-gradient(to right,#059669,#10b981)"></div></div>
+
+<div class="kpi-grid">
+<div class="kpi-item"><div class="label">Revenue Target (Mo 12)</div><div class="value green">$38,000</div></div>
+<div class="kpi-item"><div class="label">Current Revenue</div><div class="value">$0 — Pre-launch</div></div>
+<div class="kpi-item"><div class="label">Instagram Followers</div><div class="value amber">0 — Not started</div></div>
+<div class="kpi-item"><div class="label">Email Subscribers</div><div class="value amber">0 — Not started</div></div>
+</div>
+
+<div class="next-action">
+<div class="icon">🎬</div>
+<div class="text">Next: Day 1 — Brand setup, IG activation (@DrDentrepreneur + @Dr.Dad.DMD), launch first 3 posts</div>
+</div>
+
+<div class="day-items">
+<h4 style="font-size:12px;margin:10px 0 4px;color:var(--muted)">30-Day Plan Progress</h4>
+<div class="day-item completed"><h4>✅ Phase 1: Foundation Plan</h4><p>Complete — built on May 26, 2026</p></div>
+<div class="day-item"><h4>⏳ Phase 1: Days 1-7</h4><p>Brand setup, landing page, content batching, podcast setup</p></div>
+<div class="day-item"><h4>📋 Phase 2: Days 8-14</h4><p>Content engine, community setup, lead magnet PDF</p></div>
+<div class="day-item"><h4>📋 Phase 3: Days 15-21</h4><p>Authority content, outreach, course outline, mastermind design</p></div>
+<div class="day-item"><h4>📋 Phase 4: Days 22-30</h4><p>Beta mastermind launch, course pre-sale, content blitz</p></div>
+</div>
+
+<div class="revenue-ramp">
+<h3>💸 Revenue Ramp to $38K/mo</h3>
+<div class="ramp-row">
+<span class="ramp-label">Mo 1-3</span>
+<div class="ramp-bar"><div class="ramp-fill" style="width:8%;background:#059669"><span class="ramp-amount">$3K-$5K</span></div></div>
+</div>
+<div class="ramp-row">
+<span class="ramp-label">Mo 4-6</span>
+<div class="ramp-bar"><div class="ramp-fill" style="width:26%;background:#0891b2"><span class="ramp-amount">$10K</span></div></div>
+</div>
+<div class="ramp-row">
+<span class="ramp-label">Mo 7-9</span>
+<div class="ramp-bar"><div class="ramp-fill" style="width:53%;background:#7c3aed"><span class="ramp-amount">$20K</span></div></div>
+</div>
+<div class="ramp-row">
+<span class="ramp-label">Mo 10-12</span>
+<div class="ramp-bar"><div class="ramp-fill" style="width:100%;background:linear-gradient(to right,#7c3aed,#ec4899)"><span class="ramp-amount">$38K</span></div></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- TRADING WIZ -->
+<div class="venture-card">
+<div class="venture-header" id="trading" onclick="toggleVenture('trading-body', this)">
+<div class="icon" style="background:linear-gradient(135deg,#3b82f6,#6366f1)">📈</div>
+<div class="info">
+<div class="name">Trading Wiz</div>
+<div class="tag">Options trading & LEAPS income</div>
+</div>
+<span class="status-badge status-planning">Learning</span>
+<span class="arrow">▶</span>
+</div>
+<div class="venture-body" id="trading-body">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<span style="font-size:11px;color:var(--muted)">Phase 1: Education & Level 3 Approval</span>
+<span style="font-size:11px;color:var(--accent);font-weight:600">25%</span>
+</div>
+<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:25%;background:linear-gradient(to right,#3b82f6,#6366f1)"></div></div>
+
+<div class="kpi-grid">
+<div class="kpi-item"><div class="label">Level 3 Status</div><div class="value amber">In preparation</div></div>
+<div class="kpi-item"><div class="label">Study App</div><div class="value green">✅ Built & live</div></div>
+<div class="kpi-item"><div class="label">Quiz Score</div><div class="value blue">Track in app</div></div>
+<div class="kpi-item"><div class="label">Paper Trading</div><div class="value">Not started</div></div>
+</div>
+
+<div class="next-action">
+<div class="icon">📚</div>
+<div class="text">Next: Complete Level 3 options exam prep, pass Robinhood approval, start paper trading LEAPS</div>
+</div>
+
+<div class="day-items">
+<h4 style="font-size:12px;margin:10px 0 4px;color:var(--muted)">Learning Milestones</h4>
+<div class="day-item completed"><h4>✅ Options Study App</h4><p>30 questions, 9 strategies, P&L calculator, 30 flashcards — live</p></div>
+<div class="day-item"><h4>🔄 Level 3 Exam Prep</h4><p>Using study app daily, focus on spread mechanics, Greeks, assignment risk</p></div>
+<div class="day-item"><h4>📋 Level 3 Approval</h4><p>Submit Robinhood application with knowledge</p></div>
+<div class="day-item"><h4>📋 Paper Trading</h4><p>Start with virtual $25K, practice spreads and LEAPS</p></div>
+<div class="day-item"><h4>📋 First Live Trades</h4><p>Small positions — iron condors for income, LEAPS for long-term</p></div>
+</div>
+</div>
+</div>
+
+<!-- ROBIN AUTOPILOT -->
+<div class="venture-card">
+<div class="venture-header" id="robin" onclick="toggleVenture('robin-body', this)">
+<div class="icon" style="background:linear-gradient(135deg,#f59e0b,#f97316)">🤖</div>
+<div class="info">
+<div class="name">Robin Autopilot</div>
+<div class="tag">Robotic lawn care franchise — NE Florida</div>
+</div>
+<span class="status-badge status-research">Research</span>
+<span class="arrow">▶</span>
+</div>
+<div class="venture-body" id="robin-body">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<span style="font-size:11px;color:var(--muted)">Phase 1: Market Research & Viability</span>
+<span style="font-size:11px;color:var(--accent);font-weight:600">5%</span>
+</div>
+<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:5%;background:linear-gradient(to right,#f59e0b,#f97316)"></div></div>
+
+<div class="kpi-grid">
+<div class="kpi-item"><div class="label">Territory</div><div class="value blue">NE Florida (St. Augustine)</div></div>
+<div class="kpi-item"><div class="label">Market Demand</div><div class="value">TBD — Research</div></div>
+<div class="kpi-item"><div class="label">Investment Required</div><div class="value">TBD — TBD</div></div>
+<div class="kpi-item"><div class="label">Franchise Status</div><div class="value">Concept phase</div></div>
+</div>
+
+<div class="next-action">
+<div class="icon">🔍</div>
+<div class="text">Next: Research robotic lawn care franchise options, analyze NE Florida market demand, run financial models</div>
+</div>
+
+<div class="day-items">
+<h4 style="font-size:12px;margin:10px 0 4px;color:var(--muted)">Research Checklist</h4>
+<div class="day-item"><h4>📋 Franchise Options Research</h4><p>Robin Mow, Troy-Bilt, Husqvarna Automower, Mammotion</p></div>
+<div class="day-item"><h4>📋 Market Analysis</h4><p>St. Augustine area lawn care demand, competition, pricing</p></div>
+<div class="day-item"><h4>📋 Financial Modeling</h4><p>Startup costs, per-unit economics, territory valuation, ROI timeline</p></div>
+<div class="day-item"><h4>📋 Territory Application</h4><p>Apply for NE Florida territory if viable</p></div>
+<div class="day-item"><h4>📋 Regulatory & Zoning</h4><p>Check local regulations for robotic equipment on commercial properties</p></div>
+</div>
+</div>
+</div>
+
+<!-- QUICK LINKS -->
+<h3 style="font-size:15px;font-weight:700;margin:16px 0 8px">🔗 Quick Links</h3>
+<div class="quick-links">
+<a class="quick-link" href="https://von-ops.github.io/Velma-Dinkly/study-guide" target="_blank">
+<div class="ql-icon">📈</div>
+<div class="ql-name">Options Study App</div>
+<div class="ql-desc">Quiz, flashcards, P&L calculator</div>
+</a>
+<a class="quick-link" href="https://von-ops.github.io/Velma-Dinkly/dr-dentrepreneur-plan" target="_blank">
+<div class="ql-icon">🦷</div>
+<div class="ql-name">Dr. Dentrepreneur Plan</div>
+<div class="ql-desc">30-day launch roadmap</div>
+</a>
+<a class="quick-link" href="https://github.com/Von-ops/Velma-Dinkly" target="_blank">
+<div class="ql-icon">📂</div>
+<div class="ql-name">GitHub Repo</div>
+<div class="ql-desc">All files & assets</div>
+</a>
+<a class="quick-link" href="https://github.com/Von-ops" target="_blank">
+<div class="ql-icon">👤</div>
+<div class="ql-name">Von's GitHub</div>
+<div class="ql-desc">Profile & projects</div>
+</a>
+</div>
+
+<!-- TIMELINE -->
+<h3 style="font-size:15px;font-weight:700;margin:16px 0 8px">📅 Timeline</h3>
+<div class="timeline">
+<div class="timeline-item completed"><div class="date">May 22-24</div><div class="event">First Telegram sessions — options study app built</div></div>
+<div class="timeline-item completed"><div class="date">May 26</div><div class="event">GitHub repo set up, projects hosted on GitHub Pages</div></div>
+<div class="timeline-item completed"><div class="date">May 26</div><div class="event">Dr. Dentrepreneur 30-day plan created</div></div>
+<div class="timeline-item completed"><div class="date">May 28</div><div class="event">Dashboard built — this page is live</div></div>
+<div class="timeline-item"><div class="date">Upcoming</div><div class="event">Dr. Dentrepreneur Phase 1 launch</div></div>
+<div class="timeline-item"><div class="date">Upcoming</div><div class="event">Level 3 options exam passed</div></div>
+<div class="timeline-item"><div class="date">Upcoming</div><div class="event">Robin Autopilot research completed</div></div>
+</div>
+
+<div class="footer">Von Empire Command Center v1.0 | Built with ❤️ by Von & Velma</div>
+</div>
+
+</div>
+
+<script>
+function scrollToVenture(id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    const el = document.getElementById(id);
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    toggleVenture(id + '-body', el.closest('.venture-header'));
+}
+
+function toggleVenture(bodyId, headerEl) {
+    document.querySelectorAll('.venture-body').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.venture-header').forEach(h => h.classList.remove('open'));
+    if (document.getElementById(bodyId).classList.contains('open')) {
+        return;
+    }
+    document.getElementById(bodyId).classList.add('open');
+    headerEl.classList.add('open');
+}
+</script>
+</body>
+</html>
